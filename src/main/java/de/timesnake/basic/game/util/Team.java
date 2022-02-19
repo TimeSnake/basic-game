@@ -6,7 +6,7 @@ import de.timesnake.basic.bukkit.util.exceptions.UnsupportedGroupRankException;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableRemainTeam;
 import de.timesnake.database.util.game.DbTeam;
-import de.timesnake.database.util.object.Status;
+import de.timesnake.library.basic.util.Status;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 
