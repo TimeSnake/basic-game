@@ -71,7 +71,7 @@ public class TeamUser extends User {
         return this.team;
     }
 
-    public void setTeam(Team team) {
+    public void setTeam(Team team, boolean updateDatabase) {
         if (this.team == null || !this.team.equals(team)) {
             if (this.team != null) {
                 this.team.removeUser(this);
@@ -82,14 +82,20 @@ public class TeamUser extends User {
                 this.team.addUser(this);
             }
 
-            if (this.team != null) {
-                this.getDatabase().setTeam(this.team.getName());
-            } else {
-                this.getDatabase().setTeam(null);
+            if (updateDatabase) {
+                if (this.team != null) {
+                    this.getDatabase().setTeam(this.team.getName());
+                } else {
+                    this.getDatabase().setTeam(null);
+                }
             }
 
             this.updateChatName();
         }
+    }
+
+    public void setTeam(Team team) {
+        this.setTeam(team, true);
     }
 
     public boolean isTeamMate(TeamUser user) {
@@ -99,5 +105,9 @@ public class TeamUser extends User {
     @Override
     public TablistableGroup getTablistGroup(TablistGroupType type) {
         return Team.getTablistTeamType().equals(type) ? this.getTeam() : super.getTablistGroup(type);
+    }
+
+    public void updateTeam() {
+        this.setTeam(GameServer.getGame().getTeam(this.getDatabase().getTeamName()));
     }
 }
