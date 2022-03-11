@@ -102,7 +102,7 @@ public class Game extends GameInfo {
         return new Kit(dbKit);
     }
 
-    public Collection<Map> getMaps() {
+    public Collection<? extends Map> getMaps() {
         return this.maps.values();
     }
 
@@ -110,7 +110,7 @@ public class Game extends GameInfo {
         return this.maps.get(mapName);
     }
 
-    public Collection<Kit> getKits() {
+    public Collection<? extends Kit> getKits() {
         return this.kits;
     }
 
@@ -122,23 +122,23 @@ public class Game extends GameInfo {
         return this.teamsByName.containsKey(name);
     }
 
-    public final Team getTeam(String team) {
+    public Team getTeam(String team) {
         return this.teamsByName.get(team);
     }
 
-    public final Collection<Team> getTeams() {
+    public Collection<? extends Team> getTeams() {
         return new ArrayList<>(this.teamsByName.values());
     }
 
-    public java.util.Map<String, Team> getTeamsByName() {
+    public java.util.Map<String, ? extends Team> getTeamsByName() {
         return teamsByName;
     }
 
-    public LinkedHashMap<Integer, Team> getTeamsSortedByRank() {
+    public LinkedHashMap<Integer, ? extends Team> getTeamsSortedByRank() {
         return teamsSortedByRank;
     }
 
-    public LinkedHashMap<Integer, Team> getTeamsSortedByRank(int amount) {
+    public LinkedHashMap<Integer, ? extends Team> getTeamsSortedByRank(int amount) {
         LinkedHashMap<Integer, Team> teams = new LinkedHashMap<>();
         for (java.util.Map.Entry<Integer, Team> entry : teamsSortedByRank.entrySet()) {
             if (amount <= 0) {
