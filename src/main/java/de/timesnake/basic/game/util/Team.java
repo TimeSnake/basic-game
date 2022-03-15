@@ -43,9 +43,7 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
         } else {
             StringBuilder sb = new StringBuilder();
 
-            for (int i = 0; i < RANK_LENGTH - String.valueOf(this.rank).length(); ++i) {
-                sb.append("0");
-            }
+            sb.append("0".repeat(Math.max(0, RANK_LENGTH - String.valueOf(this.rank).length())));
 
             this.tablistRank = sb.append(this.rank).toString();
             Server.printText(Plugin.BUKKIT, "Loaded team " + this.name + ": " + this.displayName + "; " + this.chatColor.name() + "; " + this.color.toString() + "; " + this.tablistRank + "; " + this.ratio, "Team");
@@ -77,51 +75,32 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
 
         StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < 6 - String.valueOf(this.rank).length(); ++i) {
-            sb.append("0");
-        }
+        sb.append("0".repeat(Math.max(0, 6 - String.valueOf(this.rank).length())));
 
         this.tablistRank = sb.append(this.rank).toString();
         Server.printText(Plugin.BUKKIT, "Loaded team " + this.name + ": " + this.displayName + "; " + this.chatColor.name() + "; " + this.color.toString() + "; " + this.tablistRank + "; " + this.ratio, "Team");
     }
 
     public static Color parseColor(String colorName) {
-        switch (colorName.toUpperCase()) {
-            case "AQUA":
-                return Color.AQUA;
-            case "BLACK":
-                return Color.BLACK;
-            case "BLUE":
-                return Color.BLUE;
-            case "FUCHSIA":
-                return Color.FUCHSIA;
-            case "GRAY":
-                return Color.GRAY;
-            case "GREEN":
-                return Color.GREEN;
-            case "LIME":
-                return Color.LIME;
-            case "MAROON":
-                return Color.MAROON;
-            case "NAVY":
-                return Color.NAVY;
-            case "OLIVE":
-                return Color.OLIVE;
-            case "ORANGE":
-                return Color.ORANGE;
-            case "PURPLE":
-                return Color.PURPLE;
-            case "RED":
-                return Color.RED;
-            case "SILVER":
-                return Color.SILVER;
-            case "TEAL":
-                return Color.TEAL;
-            case "YELLOW":
-                return Color.YELLOW;
-            default:
-                return Color.WHITE;
-        }
+        return switch (colorName.toUpperCase()) {
+            case "AQUA" -> Color.AQUA;
+            case "BLACK" -> Color.BLACK;
+            case "BLUE" -> Color.BLUE;
+            case "FUCHSIA" -> Color.FUCHSIA;
+            case "GRAY" -> Color.GRAY;
+            case "GREEN" -> Color.GREEN;
+            case "LIME" -> Color.LIME;
+            case "MAROON" -> Color.MAROON;
+            case "NAVY" -> Color.NAVY;
+            case "OLIVE" -> Color.OLIVE;
+            case "ORANGE" -> Color.ORANGE;
+            case "PURPLE" -> Color.PURPLE;
+            case "RED" -> Color.RED;
+            case "SILVER" -> Color.SILVER;
+            case "TEAL" -> Color.TEAL;
+            case "YELLOW" -> Color.YELLOW;
+            default -> Color.WHITE;
+        };
     }
 
     public String getName() {
