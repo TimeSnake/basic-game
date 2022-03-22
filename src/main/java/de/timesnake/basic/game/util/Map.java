@@ -12,6 +12,7 @@ import de.timesnake.database.util.object.DbLocation;
 import org.bukkit.Material;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Map {
 
@@ -196,14 +197,11 @@ public class Map {
     }
 
     public List<ExLocation> getLocations(int begin) {
-        List<ExLocation> locs = new ArrayList<>();
-        for (int i = begin; i < this.getSpawnsAmount(); i++) {
-            ExLocation loc = this.getLocation(i);
-            if (loc != null) {
-                locs.add(loc);
-            }
-        }
-        return locs;
+        return this.locationsById.entrySet().stream().filter(e -> e.getKey() >= begin).map(java.util.Map.Entry::getValue).collect(Collectors.toList());
+    }
+
+    public List<ExLocation> getLocations(int begin, int end) {
+        return this.locationsById.entrySet().stream().filter(e -> e.getKey() >= begin && e.getKey() < end).map(java.util.Map.Entry::getValue).collect(Collectors.toList());
     }
 
     public Integer getSpawnsAmount() {
