@@ -21,7 +21,8 @@ public class Game extends GameInfo {
     protected final LinkedHashMap<Integer, Team> teamsSortedByRank = new LinkedHashMap<>();
     protected final HashMap<String, Map> maps = new HashMap<>();
 
-    protected final HashMap<Integer, HashMap<Integer, Stat<?>>> statsByLineByDisplay = new HashMap<>();
+    protected final HashMap<Integer, HashMap<Integer, Stat<?>>> statByLineByDisplay = new HashMap<>();
+    protected final HashMap<Integer, HashMap<Integer, Stat<?>>> globalStatByLineByDisplay = new HashMap<>();
 
     public Game(DbGame game, boolean loadWorlds) {
         super(game);
@@ -59,9 +60,14 @@ public class Game extends GameInfo {
             Integer displayIndex = stat.getDisplayIndex();
             Integer lineIndex = stat.getDisplayLineIndex();
 
-            HashMap<Integer, Stat<?>> display = this.statsByLineByDisplay.computeIfAbsent(displayIndex, (i) -> new HashMap<>());
-            display.put(lineIndex, stat);
+            this.statByLineByDisplay.computeIfAbsent(displayIndex, (i) -> new HashMap<>()).put(lineIndex, stat);
 
+            Integer globalDisplayIndex = stat.getGlobalDisplayIndex();
+            Integer globalLineIndex = stat.getGlobalDisplayLineIndex();
+
+            if (stat.getGlobalDisplay() && globalDisplayIndex != null && globalLineIndex != null) {
+                this.globalStatByLineByDisplay.computeIfAbsent(globalDisplayIndex, (i) -> new HashMap<>()).put(globalLineIndex, stat);
+            }
         }
 
     }
@@ -153,11 +159,15 @@ public class Game extends GameInfo {
 
     public Set<Stat<?>> getStats() {
         Set<Stat<?>> stats = new HashSet<>();
-        this.statsByLineByDisplay.forEach((key, list) -> stats.addAll(list.values()));
+        this.statByLineByDisplay.forEach((key, list) -> stats.addAll(list.values()));
         return stats;
     }
 
-    public HashMap<Integer, HashMap<Integer, Stat<?>>> getStatsByLineByDisplay() {
-        return statsByLineByDisplay;
+    public HashMap<Integer, HashMap<Integer, Stat<?>>> getStatByLineByDisplay() {
+        return statByLineByDisplay;
+    }
+
+    public HashMap<Integer, HashMap<Integer, Stat<?>>> getGlobalStatByLineByDisplay() {
+        return globalStatByLineByDisplay;
     }
 }
