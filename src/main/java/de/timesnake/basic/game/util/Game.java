@@ -79,17 +79,21 @@ public class Game extends GameInfo {
 
             for (DbMap dbMap : this.database.getMaps()) {
                 if (dbMap.isEnabled()) {
-                    Map map = this.loadMap(dbMap, loadWorlds);
+                    Map map = this.loadMap(dbMap.toLocal(), loadWorlds);
                     if (map != null) {
                         this.maps.put(map.getName(), map);
                         if (loadWorlds && map.getWorld() != null) {
-                            Server.printText(de.timesnake.basic.bukkit.util.chat.Plugin.BUKKIT, "Loaded map " + map.getName() + " (world: " + map.getWorld().getName() + ")", "Game", "Map");
+                            Server.printText(de.timesnake.basic.bukkit.util.chat.Plugin.BUKKIT,
+                                    "Loaded map " + map.getName() + " (world: " + map.getWorld().getName() + ")",
+                                    "Game", "Map");
                         } else {
-                            Server.printText(de.timesnake.basic.bukkit.util.chat.Plugin.BUKKIT, "Loaded map " + map.getName(), "Game", "Map");
+                            Server.printText(de.timesnake.basic.bukkit.util.chat.Plugin.BUKKIT,
+                                    "Loaded map " + map.getName(), "Game", "Map");
                         }
                     }
                 } else {
-                    Server.printText(de.timesnake.basic.bukkit.util.chat.Plugin.BUKKIT, "NOT loaded map " + dbMap.getName() + " (disabled)", "Game", "Map");
+                    Server.printText(de.timesnake.basic.bukkit.util.chat.Plugin.BUKKIT,
+                            "NOT loaded map " + dbMap.getName() + " (disabled)", "Game", "Map");
                 }
             }
         }
