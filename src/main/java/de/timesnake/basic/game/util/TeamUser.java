@@ -50,18 +50,27 @@ public class TeamUser extends User {
             groupPrefixColor = group.getPrefixColor();
 
             if (team == null) {
-                super.chatName = groupPrefixColor.toString() + group.getPrefix() + "§r" + ChatColor.translateAlternateColorCodes('&', prefix) + "§r" + this.getPlayer().getName() + "§r" + ChatColor.translateAlternateColorCodes('&', suffix);
+                super.chatName = groupPrefixColor.toString() + group.getPrefix() + "§r" +
+                        ChatColor.translateAlternateColorCodes('&', prefix) + "§r" +
+                        this.getPlayer().getName() + "§r" +
+                        ChatColor.translateAlternateColorCodes('&', suffix);
             } else {
-                super.chatName = groupPrefixColor.toString() + group.getPrefix() + "§r" + ChatColor.translateAlternateColorCodes('&', prefix) + "§r" + team.getChatColor().toString() + this.getPlayer().getName() + "§r" + ChatColor.translateAlternateColorCodes('&', suffix);
+                super.chatName = groupPrefixColor.toString() + group.getPrefix() + "§r" +
+                        ChatColor.translateAlternateColorCodes('&', prefix) + "§r" +
+                        team.getChatColor().toString() + this.getPlayer().getName() + "§r" +
+                        ChatColor.translateAlternateColorCodes('&', suffix);
             }
         } else {
             group = Server.getMemberGroup();
             groupPrefixColor = group.getPrefixColor();
 
             if (team == null) {
-                super.chatName = "§r" + groupPrefixColor.toString() + group.getPrefix() + "§r" + ChatColor.translateAlternateColorCodes('&', this.getNick());
+                super.chatName = "§r" + groupPrefixColor.toString() + group.getPrefix() + "§r" +
+                        ChatColor.translateAlternateColorCodes('&', this.getNick());
             } else {
-                super.chatName = "§r" + groupPrefixColor.toString() + group.getPrefix() + "§r" + team.getChatColor().toString() + ChatColor.translateAlternateColorCodes('&', this.getNick());
+                super.chatName = "§r" + groupPrefixColor.toString() + group.getPrefix() + "§r" +
+                        team.getChatColor().toString() +
+                        ChatColor.translateAlternateColorCodes('&', this.getNick());
             }
         }
 
@@ -69,6 +78,10 @@ public class TeamUser extends User {
 
     public Team getTeam() {
         return this.team;
+    }
+
+    public void setTeam(Team team) {
+        this.setTeam(team, true);
     }
 
     public void setTeam(Team team, boolean updateDatabase) {
@@ -92,10 +105,6 @@ public class TeamUser extends User {
 
             this.updateChatName();
         }
-    }
-
-    public void setTeam(Team team) {
-        this.setTeam(team, true);
     }
 
     public boolean isTeamMate(TeamUser user) {

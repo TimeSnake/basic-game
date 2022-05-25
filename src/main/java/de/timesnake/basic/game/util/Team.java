@@ -46,7 +46,8 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
             sb.append("0".repeat(Math.max(0, RANK_LENGTH - String.valueOf(this.rank).length())));
 
             this.tablistRank = sb.append(this.rank).toString();
-            Server.printText(Plugin.BUKKIT, "Loaded team " + this.name + ": " + this.displayName + "; " + this.chatColor.name() + "; " + this.color.toString() + "; " + this.tablistRank + "; " + this.ratio, "Team");
+            Server.printText(Plugin.BUKKIT,
+                    "Loaded team " + this.name + ": " + this.displayName + "; " + this.chatColor.name() + "; " + this.color.toString() + "; " + this.tablistRank + "; " + this.ratio, "Team");
         }
     }
 
@@ -78,7 +79,8 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
         sb.append("0".repeat(Math.max(0, 6 - String.valueOf(this.rank).length())));
 
         this.tablistRank = sb.append(this.rank).toString();
-        Server.printText(Plugin.BUKKIT, "Loaded team " + this.name + ": " + this.displayName + "; " + this.chatColor.name() + "; " + this.color.toString() + "; " + this.tablistRank + "; " + this.ratio, "Team");
+        Server.printText(Plugin.BUKKIT,
+                "Loaded team " + this.name + ": " + this.displayName + "; " + this.chatColor.name() + "; " + this.color.toString() + "; " + this.tablistRank + "; " + this.ratio, "Team");
     }
 
     public static Color parseColor(String colorName) {
@@ -101,6 +103,10 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
             case "YELLOW" -> Color.YELLOW;
             default -> Color.WHITE;
         };
+    }
+
+    public static TablistGroupType getTablistTeamType() {
+        return TablistGroupType.GAME_TEAM;
     }
 
     public String getName() {
@@ -151,28 +157,32 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
         this.deaths++;
     }
 
-    public void setDeaths(Integer deaths) {
-        this.deaths = deaths;
-    }
-
     public Integer getDeaths() {
         return this.deaths;
+    }
+
+    public void setDeaths(Integer deaths) {
+        this.deaths = deaths;
     }
 
     public void addKill() {
         this.kills++;
     }
 
-    public void setKills(Integer kills) {
-        this.kills = kills;
-    }
-
     public Integer getKills() {
         return this.kills;
     }
 
+    public void setKills(Integer kills) {
+        this.kills = kills;
+    }
+
     public Set<TeamUser> getUsers() {
         return this.users;
+    }
+
+    public void setUsers(Set<TeamUser> users) {
+        this.users = users;
     }
 
     public Set<TeamUser> getInGameUsers() {
@@ -183,10 +193,6 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
             }
         }
         return users;
-    }
-
-    public void setUsers(Set<TeamUser> users) {
-        this.users = users;
     }
 
     public boolean addUser(TeamUser user) {
@@ -211,10 +217,6 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
     }
 
     public TablistGroupType getTeamType() {
-        return TablistGroupType.GAME_TEAM;
-    }
-
-    public static TablistGroupType getTablistTeamType() {
         return TablistGroupType.GAME_TEAM;
     }
 
