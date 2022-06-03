@@ -24,6 +24,7 @@ repositories {
 
 dependencies {
     compileOnly 'de.timesnake:basic-bukkit:1.0-SNAPSHOT'
+    compileOnly 'de.timesnake:library-basic:1.0-SNAPSHOT'
     compileOnly 'de.timesnake:channel-bukkit:1.0-SNAPSHOT'
     compileOnly 'de.timesnake:database-bukkit:1.0-SNAPSHOT'
     compileOnly 'io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT'
