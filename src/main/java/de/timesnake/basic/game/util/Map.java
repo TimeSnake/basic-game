@@ -25,9 +25,9 @@ public class Map {
     protected final ArrayList<String> info;
     protected final DbMap dbMap;
     protected final String worldName;
-    protected ExWorld world;
     protected final java.util.Map<Integer, ExLocation> locationsById = new HashMap<>();
     protected final List<String> authors;
+    protected ExWorld world;
     private Integer votes = 0;
 
     public Map(DbMap map, boolean loadWorld) {
