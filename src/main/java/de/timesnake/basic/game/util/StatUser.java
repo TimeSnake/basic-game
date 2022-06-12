@@ -2,8 +2,13 @@ package de.timesnake.basic.game.util;
 
 import de.timesnake.database.util.game.GameUserStatistic;
 import de.timesnake.library.basic.util.statistics.Stat;
+import de.timesnake.library.basic.util.statistics.StatPeriod;
+import de.timesnake.library.basic.util.statistics.StatType;
 import de.timesnake.library.basic.util.statistics.Statistic;
 import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.Map;
 
 public class StatUser extends TeamUser {
 
@@ -13,40 +18,50 @@ public class StatUser extends TeamUser {
     public StatUser(Player player) {
         super(player);
 
-        this.stats = new Statistic();
         this.dbStats = GameServer.getGame().getDatabase().getUserStatistic(this.getUniqueId());
 
-        for (Stat<?> type : GameServer.getGame().getStats()) {
-            this.updateStat(type);
+        this.stats = new Statistic() {
+            @Override
+            public <Value> Stat<Value> addStat(StatType<Value> type) {
+                GameStat<Value> stat = new GameStat<>(dbStats, type);
+                this.statsByName.put(type.getName(), stat);
+                return stat;
+            }
+
+            @Override
+            public <Value> Stat<Value> addStat(StatType<Value> type, Value value) {
+                GameStat<Value> stat = new GameStat<>(dbStats, type, value);
+                this.statsByName.put(type.getName(), stat);
+                return stat;
+            }
+
+            @Override
+            public <Value> Stat<Value> addStat(StatType<Value> type, Map<StatPeriod, Value> values) {
+                GameStat<Value> stat = new GameStat<>(dbStats, type, values);
+                this.statsByName.put(type.getName(), stat);
+                return stat;
+            }
+        };
+
+        Map<StatType<?>, Map<StatPeriod, Object>> values = this.dbStats.get(Arrays.asList(StatPeriod.values()),
+                GameServer.getGame().getStats().toArray(new StatType[0]));
+
+        for (StatType<?> statType : GameServer.getGame().getStats()) {
+            this.loadStat(statType, values.get(statType));
         }
     }
 
-    private <Value> void updateStat(Stat<Value> type) {
-        Value value = this.dbStats.getValue(type);
-        if (value == null) {
-            value = type.getDefaultValue();
-            this.dbStats.addValue(type, type.getDefaultValue());
-        }
-        this.setStat(type, value);
+    private <Value> void loadStat(StatType<Value> type, Map<StatPeriod, ?> values) {
+        this.stats.addStat(type, ((Map<StatPeriod, Value>) values));
     }
 
-    public <Value> Value getStat(Stat<Value> type) {
+    public GameUserStatistic getDbStats() {
+        return dbStats;
+    }
+
+    public <Value> Stat<Value> getStat(StatType<Value> type) {
         return this.stats.getStat(type);
     }
 
-    public <Value> void setStat(Stat<Value> type, Value value) {
-        this.stats.setStat(type, value);
-        this.dbStats.setValue(type, value);
-    }
-
-    public <Value> void increaseStat(Stat<Value> type, Value value) {
-        Value result = this.stats.increaseStat(type, value);
-        this.dbStats.setValue(type, result);
-    }
-
-    public <Value> void higherStat(Stat<Value> type, Value value) {
-        boolean higher = this.stats.higherStat(type, value);
-        if (higher) this.dbStats.setValue(type, value);
-    }
 
 }

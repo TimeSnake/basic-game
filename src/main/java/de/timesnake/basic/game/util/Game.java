@@ -10,7 +10,7 @@ import de.timesnake.database.util.game.DbKit;
 import de.timesnake.database.util.game.DbMap;
 import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.database.util.object.Type;
-import de.timesnake.library.basic.util.statistics.Stat;
+import de.timesnake.library.basic.util.statistics.StatType;
 
 import java.util.*;
 
@@ -21,8 +21,8 @@ public class Game extends GameInfo {
     protected final LinkedHashMap<Integer, Team> teamsSortedByRank = new LinkedHashMap<>();
     protected final HashMap<String, Map> maps = new HashMap<>();
 
-    protected final HashMap<Integer, HashMap<Integer, Stat<?>>> statByLineByDisplay = new HashMap<>();
-    protected final HashMap<Integer, HashMap<Integer, Stat<?>>> globalStatByLineByDisplay = new HashMap<>();
+    protected final HashMap<Integer, HashMap<Integer, StatType<?>>> statByLineByDisplay = new HashMap<>();
+    protected final HashMap<Integer, HashMap<Integer, StatType<?>>> globalStatByLineByDisplay = new HashMap<>();
 
     public Game(DbGame game, boolean loadWorlds) {
         super(game);
@@ -56,7 +56,7 @@ public class Game extends GameInfo {
 
         this.loadMaps(loadWorlds);
 
-        for (Stat<?> stat : game.getStats()) {
+        for (StatType<?> stat : game.getStats()) {
             Integer displayIndex = stat.getDisplayIndex();
             Integer lineIndex = stat.getDisplayLineIndex();
 
@@ -161,17 +161,17 @@ public class Game extends GameInfo {
         return teams;
     }
 
-    public Set<Stat<?>> getStats() {
-        Set<Stat<?>> stats = new HashSet<>();
+    public Set<StatType<?>> getStats() {
+        Set<StatType<?>> stats = new HashSet<>();
         this.statByLineByDisplay.forEach((key, list) -> stats.addAll(list.values()));
         return stats;
     }
 
-    public HashMap<Integer, HashMap<Integer, Stat<?>>> getStatByLineByDisplay() {
+    public HashMap<Integer, HashMap<Integer, StatType<?>>> getStatByLineByDisplay() {
         return statByLineByDisplay;
     }
 
-    public HashMap<Integer, HashMap<Integer, Stat<?>>> getGlobalStatByLineByDisplay() {
+    public HashMap<Integer, HashMap<Integer, StatType<?>>> getGlobalStatByLineByDisplay() {
         return globalStatByLineByDisplay;
     }
 }
