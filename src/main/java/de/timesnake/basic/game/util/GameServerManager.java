@@ -5,14 +5,16 @@ import de.timesnake.basic.bukkit.util.ServerManager;
 import de.timesnake.basic.bukkit.util.chat.Plugin;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.game.core.UserManager;
+import de.timesnake.database.core.game.DbNonTmpGame;
+import de.timesnake.database.core.game.DbTmpGame;
 import de.timesnake.database.util.Database;
 import de.timesnake.database.util.game.DbGame;
 import org.bukkit.entity.Player;
 
-public abstract class GameServerManager extends ServerManager {
+public abstract class GameServerManager<Game extends de.timesnake.basic.game.util.Game<?>> extends ServerManager {
 
-    public static GameServerManager getInstance() {
-        return (GameServerManager) ServerManager.getInstance();
+    public static GameServerManager<?> getInstance() {
+        return (GameServerManager<?>) ServerManager.getInstance();
     }
 
     protected Game game;
@@ -31,7 +33,12 @@ public abstract class GameServerManager extends ServerManager {
     }
 
     protected Game loadGame(DbGame dbGame, boolean loadWorlds) {
-        return new Game(dbGame, loadWorlds);
+        if (dbGame instanceof DbNonTmpGame) {
+            return (Game) new NonTmpGame(((DbNonTmpGame) dbGame), loadWorlds);
+        } else if (dbGame instanceof DbTmpGame) {
+            return (Game) new TmpGame(((DbTmpGame) dbGame), loadWorlds);
+        }
+        return null;
     }
 
     public Game getGame() {

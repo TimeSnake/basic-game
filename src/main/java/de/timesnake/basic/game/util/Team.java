@@ -17,8 +17,33 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
 
     public static final int RANK_LENGTH = 6;
 
-    private final DbTeam database;
+    public static Color parseColor(String colorName) {
+        return switch (colorName.toUpperCase()) {
+            case "AQUA" -> Color.AQUA;
+            case "BLACK" -> Color.BLACK;
+            case "BLUE" -> Color.BLUE;
+            case "FUCHSIA" -> Color.FUCHSIA;
+            case "GRAY" -> Color.GRAY;
+            case "GREEN" -> Color.GREEN;
+            case "LIME" -> Color.LIME;
+            case "MAROON" -> Color.MAROON;
+            case "NAVY" -> Color.NAVY;
+            case "OLIVE" -> Color.OLIVE;
+            case "ORANGE" -> Color.ORANGE;
+            case "PURPLE" -> Color.PURPLE;
+            case "RED" -> Color.RED;
+            case "SILVER" -> Color.SILVER;
+            case "TEAL" -> Color.TEAL;
+            case "YELLOW" -> Color.YELLOW;
+            default -> Color.WHITE;
+        };
+    }
 
+    public static TablistGroupType getTablistTeamType() {
+        return TablistGroupType.GAME_TEAM;
+    }
+
+    private final DbTeam database;
     private final String name;
     private final Integer rank;
     private final String displayName;
@@ -81,32 +106,6 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
         this.tablistRank = sb.append(this.rank).toString();
         Server.printText(Plugin.BUKKIT,
                 "Loaded team " + this.name + ": " + this.displayName + "; " + this.chatColor.name() + "; " + this.color.toString() + "; " + this.tablistRank + "; " + this.ratio, "Team");
-    }
-
-    public static Color parseColor(String colorName) {
-        return switch (colorName.toUpperCase()) {
-            case "AQUA" -> Color.AQUA;
-            case "BLACK" -> Color.BLACK;
-            case "BLUE" -> Color.BLUE;
-            case "FUCHSIA" -> Color.FUCHSIA;
-            case "GRAY" -> Color.GRAY;
-            case "GREEN" -> Color.GREEN;
-            case "LIME" -> Color.LIME;
-            case "MAROON" -> Color.MAROON;
-            case "NAVY" -> Color.NAVY;
-            case "OLIVE" -> Color.OLIVE;
-            case "ORANGE" -> Color.ORANGE;
-            case "PURPLE" -> Color.PURPLE;
-            case "RED" -> Color.RED;
-            case "SILVER" -> Color.SILVER;
-            case "TEAL" -> Color.TEAL;
-            case "YELLOW" -> Color.YELLOW;
-            default -> Color.WHITE;
-        };
-    }
-
-    public static TablistGroupType getTablistTeamType() {
-        return TablistGroupType.GAME_TEAM;
     }
 
     public String getName() {

@@ -15,12 +15,10 @@ public class TeamUser extends User {
     public TeamUser(Player player) {
         super(player);
         String teamName = this.getDatabase().getTeamName();
-        if (teamName != null && GameServer.getGame() != null && GameServer.getGame().hasTeam(teamName)) {
-            this.setTeam(GameServer.getGame().getTeam(teamName));
-
+        if (teamName != null && GameServer.getGame() instanceof TmpGame && ((TmpGame) GameServer.getGame()).hasTeam(teamName)) {
+            this.setTeam(((TmpGame) GameServer.getGame()).getTeam(teamName));
+            this.updateChatName();
         }
-
-        this.updateChatName();
     }
 
     @Override
@@ -117,6 +115,6 @@ public class TeamUser extends User {
     }
 
     public void updateTeam() {
-        this.setTeam(GameServer.getGame().getTeam(this.getDatabase().getTeamName()));
+        this.setTeam(((TmpGame) GameServer.getGame()).getTeam(this.getDatabase().getTeamName()));
     }
 }

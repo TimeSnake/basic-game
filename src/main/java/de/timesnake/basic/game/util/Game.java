@@ -1,52 +1,38 @@
 package de.timesnake.basic.game.util;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
-import de.timesnake.basic.bukkit.util.chat.Plugin;
 import de.timesnake.basic.bukkit.util.exceptions.UnsupportedGroupRankException;
-import de.timesnake.basic.bukkit.util.game.GameInfo;
 import de.timesnake.database.util.game.DbGame;
 import de.timesnake.database.util.game.DbKit;
 import de.timesnake.database.util.game.DbMap;
 import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.database.util.object.Type;
 import de.timesnake.library.basic.util.statistics.StatType;
+import de.timesnake.library.game.GameInfo;
 
 import java.util.*;
 
-public class Game extends GameInfo {
+public class Game<Info extends GameInfo> {
+
+    protected final DbGame database;
+
+    protected final Info info;
 
     protected final ArrayList<Kit> kits;
-    protected final java.util.Map<String, Team> teamsByName = new HashMap<>();
-    protected final LinkedHashMap<Integer, Team> teamsSortedByRank = new LinkedHashMap<>();
+
     protected final HashMap<String, Map> maps = new HashMap<>();
 
     protected final HashMap<Integer, HashMap<Integer, StatType<?>>> statByLineByDisplay = new HashMap<>();
     protected final HashMap<Integer, HashMap<Integer, StatType<?>>> globalStatByLineByDisplay = new HashMap<>();
 
-    public Game(DbGame game, boolean loadWorlds) {
-        super(game);
-
-        for (DbTeam dbTeam : game.getTeams()) {
-            Team team;
-            try {
-                team = this.loadTeam(dbTeam);
-            } catch (UnsupportedGroupRankException e) {
-                Server.printError(Plugin.BUKKIT, ChatColor.WARNING + e.getMessage());
-                continue;
-            }
-
-            if (team != null) {
-                this.teamsByName.put(team.getName(), team);
-                this.teamsSortedByRank.put(team.getRank(), team);
-            }
-        }
-        this.teamsSortedByRank.entrySet().stream().sorted(java.util.Map.Entry.comparingByKey()).forEach(java.util.Map.Entry::getKey);
+    public Game(DbGame database, Info info, boolean loadWorlds) {
+        this.database = database;
+        this.info = info;
 
         this.kits = new ArrayList<>();
 
-        if (this.kitAvailability.equals(Type.Availability.ALLOWED) || this.kitAvailability.equals(Type.Availability.REQUIRED)) {
-            for (DbKit dbKit : game.getKits()) {
+        if (this.info.getKitAvailability().equals(Type.Availability.ALLOWED) || this.info.getKitAvailability().equals(Type.Availability.REQUIRED)) {
+            for (DbKit dbKit : database.getKits()) {
                 Kit kit = this.loadKit(dbKit);
                 if (kit != null) {
                     this.kits.add(kit);
@@ -56,7 +42,7 @@ public class Game extends GameInfo {
 
         this.loadMaps(loadWorlds);
 
-        for (StatType<?> stat : game.getStats()) {
+        for (StatType<?> stat : database.getStats()) {
             Integer displayIndex = stat.getDisplayIndex();
             Integer lineIndex = stat.getDisplayLineIndex();
 
@@ -73,7 +59,7 @@ public class Game extends GameInfo {
     }
 
     public final void loadMaps(boolean loadWorlds) {
-        if (this.mapAvailability.equals(Type.Availability.REQUIRED) || this.mapAvailability.equals(Type.Availability.ALLOWED)) {
+        if (this.info.getMapAvailability().equals(Type.Availability.REQUIRED) || this.info.getMapAvailability().equals(Type.Availability.ALLOWED)) {
 
             this.maps.clear();
 
@@ -112,6 +98,14 @@ public class Game extends GameInfo {
         return new Kit(dbKit);
     }
 
+    public DbGame getDatabase() {
+        return database;
+    }
+
+    public Info getInfo() {
+        return info;
+    }
+
     public Collection<? extends Map> getMaps() {
         return this.maps.values();
     }
@@ -126,39 +120,6 @@ public class Game extends GameInfo {
 
     public Kit getKit(int index) {
         return this.kits.get(index);
-    }
-
-    public boolean hasTeam(String name) {
-        return this.teamsByName.containsKey(name);
-    }
-
-    public Team getTeam(String team) {
-        return this.teamsByName.get(team);
-    }
-
-    public Collection<? extends Team> getTeams() {
-        return new ArrayList<>(this.teamsByName.values());
-    }
-
-    public java.util.Map<String, ? extends Team> getTeamsByName() {
-        return teamsByName;
-    }
-
-    public LinkedHashMap<Integer, ? extends Team> getTeamsSortedByRank() {
-        return teamsSortedByRank;
-    }
-
-    public LinkedHashMap<Integer, ? extends Team> getTeamsSortedByRank(int amount) {
-        LinkedHashMap<Integer, Team> teams = new LinkedHashMap<>();
-        for (java.util.Map.Entry<Integer, Team> entry : teamsSortedByRank.entrySet()) {
-            if (amount <= 0) {
-                break;
-            }
-            teams.put(entry.getKey(), entry.getValue());
-            amount--;
-        }
-        teams.entrySet().stream().sorted(java.util.Map.Entry.comparingByKey()).forEach(java.util.Map.Entry::getKey);
-        return teams;
     }
 
     public Set<StatType<?>> getStats() {
