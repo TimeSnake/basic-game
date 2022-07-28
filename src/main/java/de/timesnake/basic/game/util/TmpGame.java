@@ -82,6 +82,10 @@ public class TmpGame extends Game<TmpGameInfo> {
 
     public boolean isEqualTimeSizeRequired() {return getInfo().isEqualTimeSizeRequired();}
 
+    public boolean hideTeams() {
+        return getInfo().hideTeams();
+    }
+
     public List<String> getDescription() {return getInfo().getDescription();}
 
     public String getName() {return getInfo().getName();}
