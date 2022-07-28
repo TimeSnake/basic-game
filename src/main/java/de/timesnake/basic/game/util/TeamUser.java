@@ -47,7 +47,7 @@ public class TeamUser extends User {
 
             groupPrefixColor = group.getPrefixColor();
 
-            if (team == null) {
+            if (team == null || (GameServer.getGame() instanceof TmpGame && ((TmpGame) GameServer.getGame()).hideTeams())) {
                 super.chatName = groupPrefixColor.toString() + group.getPrefix() + "§r" +
                         ChatColor.translateAlternateColorCodes('&', prefix) + "§r" +
                         this.getPlayer().getName() + "§r" +
@@ -62,7 +62,7 @@ public class TeamUser extends User {
             group = Server.getMemberGroup();
             groupPrefixColor = group.getPrefixColor();
 
-            if (team == null) {
+            if (team == null || (GameServer.getGame() instanceof TmpGame && ((TmpGame) GameServer.getGame()).hideTeams())) {
                 super.chatName = "§r" + groupPrefixColor.toString() + group.getPrefix() + "§r" +
                         ChatColor.translateAlternateColorCodes('&', this.getNick());
             } else {
