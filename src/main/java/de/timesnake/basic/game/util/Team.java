@@ -51,11 +51,12 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
     private final Color color;
     private final String tablistRank;
     private final float ratio;
+    private final boolean privateChat;
     private Set<TeamUser> users = new HashSet<>();
     private Integer deaths = 0;
     private Integer kills = 0;
 
-    public Team(String name, Integer rank, String displayName, ChatColor chatColor, Color color, float ratio) throws UnsupportedGroupRankException {
+    public Team(String name, Integer rank, String displayName, ChatColor chatColor, Color color, float ratio, boolean privateChat) throws UnsupportedGroupRankException {
         this.database = null;
         this.name = name;
         this.rank = rank;
@@ -63,6 +64,7 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
         this.chatColor = chatColor;
         this.color = color;
         this.ratio = ratio;
+        this.privateChat = privateChat;
         if (String.valueOf(this.rank).length() > RANK_LENGTH) {
             throw new UnsupportedGroupRankException(this.name, this.rank);
         } else {
@@ -95,6 +97,7 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
 
         this.color = parseColor(team.getColorName());
         this.ratio = team.getRatio();
+        this.privateChat = team.hasPrivateChat();
         if (String.valueOf(this.rank).length() > 6) {
             throw new UnsupportedGroupRankException(this.name, this.rank);
         }
@@ -150,6 +153,10 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
 
     public float getRatio() {
         return this.ratio;
+    }
+
+    public boolean hasPrivateChat() {
+        return privateChat;
     }
 
     public void addDeath() {
