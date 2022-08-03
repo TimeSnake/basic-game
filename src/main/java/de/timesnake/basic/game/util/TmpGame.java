@@ -86,6 +86,8 @@ public class TmpGame extends Game<TmpGameInfo> {
         return getInfo().hideTeams();
     }
 
+    public Type.Discord getDiscordType() {return getInfo().getDiscordType();}
+
     public List<String> getDescription() {return getInfo().getDescription();}
 
     public String getName() {return getInfo().getName();}
