@@ -204,6 +204,18 @@ public class Map {
                 e -> e.getKey() >= begin && e.getKey() < end).map(java.util.Map.Entry::getValue).collect(Collectors.toList());
     }
 
+    public Collection<Integer> getLocationIds() {
+        return this.locationsById.keySet();
+    }
+
+    public Collection<Integer> getLocationsIds(int begin, int end) {
+        return this.getLocationIds().stream().filter(i -> i >= begin && i < end).toList();
+    }
+
+    public Collection<Integer> getLocationIds(int begin) {
+        return this.getLocationIds().stream().filter(i -> i >= begin).toList();
+    }
+
     public Integer getSpawnsAmount() {
         return this.locationsById.size();
     }
