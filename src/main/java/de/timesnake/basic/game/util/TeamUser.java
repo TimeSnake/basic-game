@@ -30,7 +30,7 @@ public class TeamUser extends User {
         Team team = this.getTeam();
 
         if (team != null && (!(GameServer.getGame() instanceof TmpGame) || !((TmpGame) GameServer.getGame()).hideTeams())) {
-            return team.getChatColor().toString() + this.getPlayer().getName();
+            return team.getTextColor().toString() + this.getPlayer().getName();
         }
         return super.getPlayerChatName();
     }

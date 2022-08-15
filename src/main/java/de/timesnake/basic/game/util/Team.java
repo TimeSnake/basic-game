@@ -7,6 +7,7 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableRemainTeam;
 import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.library.basic.util.Status;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 
@@ -47,6 +48,7 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
     private final String name;
     private final Integer rank;
     private final String displayName;
+    private final ExTextColor textColor;
     private final ChatColor chatColor;
     private final Color color;
     private final String tablistRank;
@@ -56,12 +58,13 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
     private Integer deaths = 0;
     private Integer kills = 0;
 
-    public Team(String name, Integer rank, String displayName, ChatColor chatColor, Color color, float ratio, boolean privateChat) throws UnsupportedGroupRankException {
+    public Team(String name, Integer rank, String displayName, ExTextColor textColor, Color color, float ratio, boolean privateChat) throws UnsupportedGroupRankException {
         this.database = null;
         this.name = name;
         this.rank = rank;
         this.displayName = displayName;
-        this.chatColor = chatColor;
+        this.textColor = textColor;
+        this.chatColor = de.timesnake.basic.bukkit.util.chat.ChatColor.translateFromExTextColor(textColor);
         this.color = color;
         this.ratio = ratio;
         this.privateChat = privateChat;
@@ -74,7 +77,7 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
 
             this.tablistRank = sb.append(this.rank).toString();
             Server.printText(Plugin.BUKKIT,
-                    "Loaded team " + this.name + ": " + this.displayName + "; " + this.chatColor.name() + "; " + this.color.toString() + "; " + this.tablistRank + "; " + this.ratio, "Team");
+                    "Loaded team " + this.name + ": " + this.displayName + "; " + this.textColor.asHexString() + "; " + this.color.toString() + "; " + this.tablistRank + "; " + this.ratio, "Team");
         }
     }
 
@@ -86,15 +89,8 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
         this.name = team.getName();
         this.rank = team.getRank();
         this.displayName = team.getPrefix();
-
-        ChatColor chatColor = ChatColor.WHITE;
-        try {
-            chatColor = ChatColor.valueOf(team.getChatColorName().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            Server.printWarning(Plugin.BUKKIT, "Can not load color of team " + this.name);
-        }
-        this.chatColor = chatColor;
-
+        this.textColor = team.getChatColor() != null ? team.getChatColor() : ExTextColor.WHITE;
+        this.chatColor = de.timesnake.basic.bukkit.util.chat.ChatColor.translateFromExTextColor(this.textColor);
         this.color = parseColor(team.getColorName());
         this.ratio = team.getRatio();
         this.privateChat = team.hasPrivateChat();
@@ -108,7 +104,7 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
 
         this.tablistRank = sb.append(this.rank).toString();
         Server.printText(Plugin.BUKKIT,
-                "Loaded team " + this.name + ": " + this.displayName + "; " + this.chatColor.name() + "; " + this.color.toString() + "; " + this.tablistRank + "; " + this.ratio, "Team");
+                "Loaded team " + this.name + ": " + this.displayName + "; " + this.textColor.toString() + "; " + this.color.toString() + "; " + this.tablistRank + "; " + this.ratio, "Team");
     }
 
     public String getName() {
@@ -119,32 +115,42 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
         return this.rank;
     }
 
+    @Override
     public String getTablistRank() {
         return this.tablistRank;
     }
 
+    @Override
     public String getTablistName() {
         return this.getDisplayName();
     }
 
+    @Override
     public ChatColor getTablistChatColor() {
-        return this.getChatColor();
+        return this.chatColor;
     }
 
     public String getDisplayName() {
         return this.displayName;
     }
 
+    @Override
     public String getTablistPrefix() {
         return "";
     }
 
-    public ChatColor getChatColor() {
+    public ExTextColor getTextColor() {
+        return this.textColor;
+    }
+
+    @Override
+    public ChatColor getTablistPrefixChatColor() {
         return this.chatColor;
     }
 
-    public ChatColor getTablistPrefixChatColor() {
-        return this.getChatColor();
+    @Deprecated
+    public ChatColor getChatColor() {
+        return chatColor;
     }
 
     public Color getColor() {
