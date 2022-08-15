@@ -3,7 +3,6 @@ package de.timesnake.basic.game.util;
 import de.timesnake.database.util.game.DbNonTmpGame;
 import de.timesnake.database.util.object.Type;
 import de.timesnake.library.game.NonTmpGameInfo;
-import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
 public class NonTmpGame extends Game<NonTmpGameInfo> {
@@ -21,8 +20,6 @@ public class NonTmpGame extends Game<NonTmpGameInfo> {
     public String getName() {return getInfo().getName();}
 
     public String getDisplayName() {return getInfo().getDisplayName();}
-
-    public ChatColor getChatColor() {return getInfo().getChatColor();}
 
     public Integer getMaxPlayers() {return getInfo().getMaxPlayers();}
 
