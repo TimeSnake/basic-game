@@ -3,6 +3,7 @@ package de.timesnake.basic.game.util;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 public class TeamUser extends User {
@@ -26,11 +27,11 @@ public class TeamUser extends User {
     }
 
     @Override
-    protected String getPlayerChatName() {
+    protected Component getPlayerChatName() {
         Team team = this.getTeam();
 
         if (team != null && (!(GameServer.getGame() instanceof TmpGame) || !((TmpGame) GameServer.getGame()).hideTeams())) {
-            return team.getTextColor().toString() + this.getPlayer().getName();
+            return Component.text(this.getPlayer().getName(), team.getTextColor());
         }
         return super.getPlayerChatName();
     }
