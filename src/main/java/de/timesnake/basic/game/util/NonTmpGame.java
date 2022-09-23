@@ -11,11 +11,13 @@ public class NonTmpGame extends Game<NonTmpGameInfo> {
         super(database, new NonTmpGameInfo(database.getInfo()), loadWorlds);
     }
 
-    public boolean isGenerateable() {return getInfo().isGenerateable();}
-
-    public boolean isAutoDeleteAllowed() {return getInfo().isAutoDeleteAllowed();}
+    public boolean isCreationRequestable() {return getInfo().isCreationRequestable();}
 
     public boolean isOwnable() {return getInfo().isOwnable();}
+
+    public boolean isNetherAndEndAllowed() {
+        return getInfo().isNetherAndEndAllowed();
+    }
 
     public String getName() {return getInfo().getName();}
 
