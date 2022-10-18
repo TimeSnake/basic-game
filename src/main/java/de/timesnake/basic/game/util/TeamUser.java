@@ -23,6 +23,7 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class TeamUser extends User {
 
@@ -45,7 +46,7 @@ public class TeamUser extends User {
     }
 
     @Override
-    protected Component getPlayerChatName() {
+    protected @NotNull Component getPlayerChatName() {
         Team team = this.getTeam();
 
         if (team != null && (!(GameServer.getGame() instanceof TmpGame) || !((TmpGame) GameServer.getGame()).hideTeams())) {
