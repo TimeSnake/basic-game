@@ -21,8 +21,7 @@ package de.timesnake.basic.game.util;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Plugin;
 import de.timesnake.basic.bukkit.util.exceptions.UnsupportedGroupRankException;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableRemainTeam;
+import de.timesnake.basic.bukkit.util.user.scoreboard.*;
 import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.chat.ExTextColor;
@@ -32,7 +31,7 @@ import org.bukkit.Color;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Team implements TablistableGroup, TablistableRemainTeam {
+public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
 
     public static final int RANK_LENGTH = 6;
 
@@ -252,5 +251,16 @@ public class Team implements TablistableGroup, TablistableRemainTeam {
 
     public DbTeam getDatabase() {
         return database;
+    }
+
+
+    @Override
+    public NameTagVisibility isNameTagVisibleBy(TablistablePlayer player, TablistableGroup otherGroup) {
+        return NameTagVisibility.ALWAYS;
+    }
+
+    @Override
+    public NameTagVisibility isNameTagVisible(TablistablePlayer player) {
+        return NameTagVisibility.ALWAYS;
     }
 }
