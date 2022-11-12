@@ -42,7 +42,7 @@ dependencies {
 
 group = project.group
 version = '1.0-SNAPSHOT'
-description = 'basic-game'
+archivesBaseName = 'basic-game'
 java.sourceCompatibility = 1.17
 java.targetCompatibility = 1.17
 
