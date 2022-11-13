@@ -1,18 +1,11 @@
-plugins {
-    id 'java'
-    id 'maven-publish'
-}
-
 repositories {
     mavenLocal()
     maven {
         url = uri 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
     }
-
     maven {
         url = uri 'https://papermc.io/repo/repository/maven-public/'
     }
-
     maven {
         url = uri 'https://repo.maven.apache.org/maven2/'
     }
@@ -43,25 +36,3 @@ dependencies {
 group = project.group
 version = '1.0-SNAPSHOT'
 archivesBaseName = 'basic-game'
-java.sourceCompatibility = 1.17
-java.targetCompatibility = 1.17
-
-task sourceJar(type: Jar) {
-    from sourceSets.main.allJava
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-
-            artifact sourceJar {
-                classifier "sources"
-            }
-        }
-    }
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
