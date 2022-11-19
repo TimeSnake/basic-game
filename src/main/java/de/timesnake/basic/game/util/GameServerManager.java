@@ -1,5 +1,5 @@
 /*
- * basic-game.main
+ * workspace.basic-game.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -46,7 +46,7 @@ public abstract class GameServerManager<Game extends de.timesnake.basic.game.uti
         if (dbGame != null && dbGame.exists()) {
             this.game = this.loadGame(dbGame, false);
         } else {
-            Server.printError(Plugin.BUKKIT, "Can not load game");
+            Server.printWarning(Plugin.BUKKIT, "Can not load game");
         }
     }
 
@@ -66,7 +66,7 @@ public abstract class GameServerManager<Game extends de.timesnake.basic.game.uti
     public final DbGame getDbGame() {
         String task = Server.getTask();
         if (task == null) {
-            Server.printError(Plugin.BUKKIT, "Task is null");
+            Server.printWarning(Plugin.BUKKIT, "Task is null");
             return null;
         } else {
             return Database.getGames().getGame(task);

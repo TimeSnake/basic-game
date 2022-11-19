@@ -1,5 +1,5 @@
 /*
- * basic-game.main
+ * workspace.basic-game.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -61,7 +61,7 @@ public class Kit {
         try {
             this.material = Material.getMaterial(materialName);
         } catch (IllegalArgumentException var4) {
-            Server.printError(Plugin.BUKKIT, "Error while loading item for kit " + this.getName(), "Kit");
+            Server.printWarning(Plugin.BUKKIT, "Error while loading item for kit " + this.getName(), "Kit");
         }
 
     }
