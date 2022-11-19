@@ -1,5 +1,5 @@
 /*
- * basic-game.main
+ * workspace.basic-game.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -42,7 +42,7 @@ public class TmpGame extends Game<TmpGameInfo> {
             try {
                 team = this.loadTeam(dbTeam);
             } catch (UnsupportedGroupRankException e) {
-                Server.printError(Plugin.BUKKIT, de.timesnake.basic.bukkit.util.chat.ChatColor.WARNING + e.getMessage());
+                Server.printWarning(Plugin.BUKKIT, de.timesnake.basic.bukkit.util.chat.ChatColor.WARNING + e.getMessage());
                 continue;
             }
 
