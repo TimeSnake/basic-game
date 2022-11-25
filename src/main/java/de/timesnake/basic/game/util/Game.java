@@ -1,5 +1,5 @@
 /*
- * basic-game.main
+ * workspace.basic-game.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -19,7 +19,7 @@
 package de.timesnake.basic.game.util;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.exceptions.UnsupportedGroupRankException;
+import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
 import de.timesnake.database.util.game.DbGame;
 import de.timesnake.database.util.game.DbKit;
 import de.timesnake.database.util.game.DbMap;
