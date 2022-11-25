@@ -1,5 +1,5 @@
 /*
- * basic-game.main
+ * workspace.basic-game.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -20,8 +20,8 @@ package de.timesnake.basic.game.util;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Plugin;
-import de.timesnake.basic.bukkit.util.exceptions.LocationNotInWorldException;
-import de.timesnake.basic.bukkit.util.exceptions.WorldNotExistException;
+import de.timesnake.basic.bukkit.util.exception.LocationNotInWorldException;
+import de.timesnake.basic.bukkit.util.exception.WorldNotExistException;
 import de.timesnake.basic.bukkit.util.user.ExItemStack;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
