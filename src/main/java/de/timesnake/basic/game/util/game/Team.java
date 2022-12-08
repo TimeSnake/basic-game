@@ -16,12 +16,13 @@
  * along with this program; If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.timesnake.basic.game.util;
+package de.timesnake.basic.game.util.game;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Plugin;
 import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
 import de.timesnake.basic.bukkit.util.user.scoreboard.*;
+import de.timesnake.basic.game.util.user.TeamUser;
 import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.chat.ExTextColor;

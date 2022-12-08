@@ -16,7 +16,7 @@
  * along with this program; If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.timesnake.basic.game.util;
+package de.timesnake.basic.game.util.game;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Plugin;
@@ -98,6 +98,10 @@ public class TmpGame extends Game<TmpGameInfo> {
     public Type.Availability getTeamMerge() {return getInfo().getTeamMerge();}
 
     public boolean isEqualTimeSizeRequired() {return getInfo().isEqualTimeSizeRequired();}
+
+    public boolean showSelectedKits() {
+        return getInfo().showSelectedKits();
+    }
 
     public boolean hideTeams() {
         return getInfo().hideTeams();

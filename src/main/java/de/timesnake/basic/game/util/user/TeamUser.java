@@ -1,5 +1,5 @@
 /*
- * basic-game.main
+ * workspace.basic-game.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -16,11 +16,14 @@
  * along with this program; If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.timesnake.basic.game.util;
+package de.timesnake.basic.game.util.user;
 
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
+import de.timesnake.basic.game.util.game.Team;
+import de.timesnake.basic.game.util.game.TmpGame;
+import de.timesnake.basic.game.util.server.GameServer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
