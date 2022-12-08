@@ -1,5 +1,5 @@
 /*
- * basic-game.main
+ * workspace.basic-game.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -16,19 +16,19 @@
  * along with this program; If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.timesnake.basic.game.util;
+package de.timesnake.basic.game.util.user;
 
-import de.timesnake.basic.bukkit.util.Server;
+import de.timesnake.library.basic.util.LogHelper;
 
-public class GameServer extends Server {
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-    public static final String DISCORD_SPECTATOR = "Spectator";
-    public static final String DISCORD_LOUNGE = "Lounge";
+public class Plugin extends de.timesnake.basic.bukkit.util.chat.Plugin {
 
-    public static Game<?> getGame() {
-        return server.getGame();
+    public static final Plugin LOUNGE = new Plugin("Lounge", "BLB", LogHelper.getLogger("Lounge", Level.INFO));
+    public static final Plugin GAME = new Plugin("Game", "BLG", LogHelper.getLogger("Game", Level.INFO));
+
+    protected Plugin(String name, String code, Logger logger) {
+        super(name, code, logger);
     }
-
-    private static final GameServerManager<?> server = GameServerManager.getInstance();
-
 }

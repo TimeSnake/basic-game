@@ -1,5 +1,5 @@
 /*
- * basic-game.main
+ * workspace.basic-game.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -16,8 +16,10 @@
  * along with this program; If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.timesnake.basic.game.util;
+package de.timesnake.basic.game.util.user;
 
+import de.timesnake.basic.game.util.game.GameStat;
+import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.database.util.game.GameUserStatistic;
 import de.timesnake.library.basic.util.statistics.Stat;
 import de.timesnake.library.basic.util.statistics.StatPeriod;
@@ -28,7 +30,7 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.Map;
 
-public class StatUser extends TeamUser {
+public class StatUser extends SpectatorUser {
 
     private final Statistic stats;
     private final GameUserStatistic dbStats;
