@@ -22,11 +22,15 @@ import de.timesnake.basic.bukkit.core.main.BasicBukkit;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Chat;
 import de.timesnake.basic.bukkit.util.user.User;
+import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablist;
+import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.game.util.game.TmpGame;
 import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.packets.util.packet.ExPacketPlayOutEntityEffect;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class SpectatorUser extends TeamUser {
 
@@ -36,6 +40,14 @@ public abstract class SpectatorUser extends TeamUser {
 
     public SpectatorUser(Player player) {
         super(player);
+
+        this.hideSpectators();
+    }
+
+    @Override
+    public void setStatus(Status.User status) {
+        super.setStatus(status);
+        GameServer.getSpectatorManager().updateSpectatorTools();
     }
 
     public void joinSpectator() {
@@ -85,10 +97,14 @@ public abstract class SpectatorUser extends TeamUser {
             }
         }
 
-        // set tablist team
-        if (!((TmpGame) GameServer.getGame()).hideTeams() || this.getStatus().equals(Status.User.SPECTATOR)) {
-            GameServer.getSpectatorManager().getGameTablist().removeEntry(this);
-            GameServer.getSpectatorManager().getGameTablist().addRemainEntry(this);
+        if (GameServer.getSpectatorManager().getGameTablist() instanceof TeamTablist tablist) {
+            // set tablist team
+            if (!(GameServer.getGame() instanceof TmpGame)
+                    || !((TmpGame) GameServer.getGame()).hideTeams()
+                    || this.getStatus().equals(Status.User.SPECTATOR)) {
+                tablist.removeEntry(this);
+                tablist.addRemainEntry(this);
+            }
         }
 
         if (this.getTeam() == null) {
@@ -147,8 +163,8 @@ public abstract class SpectatorUser extends TeamUser {
 
     public void setSpeedEnabled(boolean speedEnabled) {
         this.speedEnabled = speedEnabled;
-        this.setFlySpeed(this.speedEnabled ? 0.2F : 0.4F);
-        this.setWalkSpeed(this.speedEnabled ? 0.2F : 0.4F);
+        this.setFlySpeed(this.speedEnabled ? 0.4F : 0.2F);
+        this.setWalkSpeed(this.speedEnabled ? 0.4F : 0.2F);
     }
 
     public boolean hasFlyEnabled() {
@@ -161,8 +177,56 @@ public abstract class SpectatorUser extends TeamUser {
         this.setFlying(flyEnabled);
     }
 
-    public void rejoinGame() {
+    public void leaveSpectator(@Nullable ExLocation location, @NotNull Status.User newStatus) {
         this.glowingEnabled = false;
         this.speedEnabled = false;
+
+        if (this.getStatus().equals(Status.User.SPECTATOR)) {
+            return;
+        }
+
+        this.setStatus(newStatus);
+
+        GameServer.getSpectatorManager().getGameTablist().addEntry(this);
+
+        Chat spectatorChat = GameServer.getSpectatorManager().getSpectatorChat();
+        if (spectatorChat != null) {
+            spectatorChat.removeWriter(this);
+            spectatorChat.removeListener(this);
+            GameServer.getGlobalChat().addWriter(this);
+        }
+
+        this.rejoinGame(location, newStatus);
+    }
+
+    public void rejoinGame(@Nullable ExLocation location, @NotNull Status.User newStatus) {
+        this.setStatus(newStatus);
+        this.setDefault();
+
+        this.setGameMode(GameServer.getSpectatorManager().getReJoinGameMode());
+
+        if (location != null) {
+            this.teleport(location);
+        }
+
+        this.hideSpectators();
+
+        this.setRejoinInventory();
+
+        this.setSideboard(GameServer.getSpectatorManager().getGameSideboard());
+    }
+
+    public void hideSpectators() {
+        for (User user : Server.getUsers()) {
+            user.showUser(this);
+
+            if (user.getStatus().equals(Status.User.OUT_GAME) || user.getStatus().equals(Status.User.SPECTATOR)) {
+                this.hideUser(user);
+            }
+        }
+    }
+
+    public void setRejoinInventory() {
+
     }
 }

@@ -28,7 +28,7 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.*;
 import de.timesnake.basic.bukkit.util.user.scoreboard.ItemHoldClick;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablist;
+import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.chat.ExTextColor;
@@ -39,6 +39,7 @@ import de.timesnake.library.packets.util.packet.ExPacketPlayOut;
 import de.timesnake.library.packets.util.packet.ExPacketPlayOutEntityMetadata;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -55,14 +56,19 @@ import java.util.Set;
 public abstract class SpectatorManager implements UserInventoryClickListener, UserInventoryInteractListener,
         PacketPlayOutListener, Listener {
 
-    // teleports the spectator to spawn if he goes lower than min y
-    public static final Integer MIN_Y = -84;
+    // teleports the spectator to spawn if he goes lower than min height - value
+    public static final Integer MAX_LOWER_THAN_MIN_HEIGHT = 10;
 
-    public static final ExItemStack USER_INV = new ExItemStack(1, Material.PLAYER_HEAD, "§9Teleporter");
-    public static final ExItemStack GLOWING = new ExItemStack(2, Material.SPECTRAL_ARROW, "§6Glowing");
-    public static final ExItemStack SPEED = new ExItemStack(3, Material.FEATHER, "§bSpeed");
-    public static final ExItemStack FLYING = new ExItemStack(4, Material.RABBIT_FOOT, "§9Flying");
-    public static final ExItemStack LEAVE_ITEM = new ExItemStack(8, Material.ANVIL, "§6Leave (hold right)");
+    public static final ExItemStack USER_INV = new ExItemStack(1, Material.PLAYER_HEAD, "§9Teleporter")
+            .setMoveable(false).setDropable(false).immutable();
+    public static final ExItemStack GLOWING = new ExItemStack(2, Material.SPECTRAL_ARROW, "§6Glowing")
+            .setMoveable(false).setDropable(false).immutable();
+    public static final ExItemStack SPEED = new ExItemStack(3, Material.FEATHER, "§bSpeed")
+            .setMoveable(false).setDropable(false).immutable();
+    public static final ExItemStack FLYING = new ExItemStack(4, Material.RABBIT_FOOT, "§9Flying")
+            .setMoveable(false).setDropable(false).immutable();
+    public static final ExItemStack LEAVE_ITEM = new ExItemStack(8, Material.ANVIL, "§6Leave (hold right)")
+            .setMoveable(false).setDropable(false).immutable();
 
     private static final Integer LEAVE_TIME = 2000;
 
@@ -128,9 +134,7 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Us
             ExPacketPlayOut packet = ExPacketPlayOutEntityMetadata.wrap(glowingUser.getPlayer(),
                     ExPacketPlayOutEntityMetadata.DataType.UPDATE);
             for (User receiver : receivers) {
-                if (((SpectatorUser) receiver).hasGlowingEnabled()) {
-                    receiver.sendPacket(packet);
-                }
+                receiver.sendPacket(packet);
             }
         }
     }
@@ -224,7 +228,7 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Us
                 clickedItem.disenchant();
             }
         } else if (clickedItem.equals(FLYING)) {
-            user.setFlyEnabled(user.hasFlyEnabled());
+            user.setFlyEnabled(!user.hasFlyEnabled());
             user.sendPluginMessage(Plugin.GAME, Component.text((user.getAllowFlight() ? "Enabled" : "Disabled") + " flying", ExTextColor.PERSONAL));
             if (user.getAllowFlight()) clickedItem.enchant();
             else clickedItem.disenchant();
@@ -261,7 +265,7 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Us
         User user = e.getUser();
         if (user.getStatus().equals(Status.User.SPECTATOR) || user.getStatus().equals(Status.User.OUT_GAME)) {
             e.setCancelled(true);
-            if (user.getLocation().getY() < MIN_Y) {
+            if (user.getLocation().getY() < user.getWorld().getMinHeight() - MAX_LOWER_THAN_MIN_HEIGHT) {
                 ((SpectatorUser) user).teleportToSpectatorSpawn();
             }
         }
@@ -271,7 +275,7 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Us
     public void onUserMove(UserMoveEvent e) {
         User user = e.getUser();
         if (user.getStatus().equals(Status.User.SPECTATOR) || user.getStatus().equals(Status.User.OUT_GAME)) {
-            if (user.getLocation().getY() < MIN_Y) {
+            if (user.getLocation().getY() < user.getWorld().getMinHeight() - MAX_LOWER_THAN_MIN_HEIGHT) {
                 ((SpectatorUser) user).teleportToSpectatorSpawn();
             }
         }
@@ -285,7 +289,27 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Us
         }
     }
 
-    public abstract @NotNull TeamTablist getGameTablist();
+    @EventHandler
+    public void onUserPickupItem(UserAttemptPickupItemEvent e) {
+        User user = e.getUser();
+        if (user.getStatus().equals(Status.User.SPECTATOR) || user.getStatus().equals(Status.User.OUT_GAME)) {
+            e.setFlyAtPlayer(false);
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamageByUser(EntityDamageByUserEvent e) {
+        User user = e.getUser();
+        if (user.getStatus().equals(Status.User.SPECTATOR) || user.getStatus().equals(Status.User.OUT_GAME)) {
+            e.setCancelDamage(true);
+            e.setCancelled(true);
+        }
+    }
+
+    public abstract @NotNull Tablist getGameTablist();
+
+    public abstract @Nullable Sideboard getGameSideboard();
 
     public abstract @Nullable Sideboard getSpectatorSideboard();
 
@@ -294,4 +318,8 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Us
     public abstract ExLocation getSpectatorSpawn();
 
     public abstract boolean loadTools();
+
+    public GameMode getReJoinGameMode() {
+        return GameMode.ADVENTURE;
+    }
 }
