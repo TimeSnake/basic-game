@@ -77,7 +77,8 @@ public class Game<Info extends GameInfo> {
     }
 
     public final void loadMaps(boolean loadWorlds) {
-        if (this.info.getMapAvailability().equals(Type.Availability.REQUIRED) || this.info.getMapAvailability().equals(Type.Availability.ALLOWED)) {
+        if (this.info.getMapAvailability().equals(Type.Availability.REQUIRED)
+            || this.info.getMapAvailability().equals(Type.Availability.ALLOWED)) {
 
             this.maps.clear();
 

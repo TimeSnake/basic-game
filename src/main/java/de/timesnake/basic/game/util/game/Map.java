@@ -39,8 +39,8 @@ public class Map {
     protected final Integer minPlayers;
     protected final Integer maxPlayers;
     protected final ExItemStack item;
-    protected final ArrayList<String> description;
-    protected final ArrayList<String> info;
+    protected final List<String> description;
+    protected final List<String> info;
     protected final DbMap dbMap;
     protected final String worldName;
     protected final java.util.Map<Integer, ExLocation> locationsById = new HashMap<>();
@@ -271,11 +271,11 @@ public class Map {
         return this.item;
     }
 
-    public ArrayList<String> getDescription() {
+    public List<String> getDescription() {
         return this.description;
     }
 
-    public ArrayList<String> getInfo() {
+    public List<String> getInfo() {
         return this.info;
     }
 
