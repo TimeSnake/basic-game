@@ -80,7 +80,8 @@ public abstract class SpectatorUser extends TeamUser {
                 user.hideUser(this);
 
                 this.sendPacket(ExPacketPlayOutEntityEffect.wrap(user.getPlayer(),
-                        ExPacketPlayOutEntityEffect.Effect.GLOWING, ((byte) 0), Integer.MAX_VALUE, true, true, true));
+                        ExPacketPlayOutEntityEffect.Effect.GLOWING, ((byte) 0), Integer.MAX_VALUE,
+                        true, true, true));
 
             } else if (Status.User.OUT_GAME.equals(user.getStatus())
                     || Status.User.SPECTATOR.equals(user.getStatus())) {
@@ -113,7 +114,6 @@ public abstract class SpectatorUser extends TeamUser {
 
         this.setSideboard(GameServer.getSpectatorManager().getSpectatorSideboard());
         this.resetSideboard();
-
 
         if (!GameServer.getSpectatorManager().loadTools()) {
             return;
@@ -177,7 +177,8 @@ public abstract class SpectatorUser extends TeamUser {
         this.setFlying(flyEnabled);
     }
 
-    public void leaveSpectator(@Nullable ExLocation location, @NotNull Status.User newStatus) {
+    public void leaveSpectatorAndRejoin(@Nullable ExLocation location,
+            @NotNull Status.User newStatus) {
         this.glowingEnabled = false;
         this.speedEnabled = false;
 
@@ -210,6 +211,7 @@ public abstract class SpectatorUser extends TeamUser {
         }
 
         this.hideSpectators();
+        GameServer.getSpectatorManager().updateGlowingPlayers();
 
         this.setRejoinInventory();
 
@@ -220,7 +222,8 @@ public abstract class SpectatorUser extends TeamUser {
         for (User user : Server.getUsers()) {
             user.showUser(this);
 
-            if (user.getStatus().equals(Status.User.OUT_GAME) || user.getStatus().equals(Status.User.SPECTATOR)) {
+            if (user.getStatus().equals(Status.User.OUT_GAME)
+                    || user.getStatus().equals(Status.User.SPECTATOR)) {
                 this.hideUser(user);
             }
         }
