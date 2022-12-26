@@ -25,10 +25,9 @@ import de.timesnake.library.basic.util.statistics.Stat;
 import de.timesnake.library.basic.util.statistics.StatPeriod;
 import de.timesnake.library.basic.util.statistics.StatType;
 import de.timesnake.library.basic.util.statistics.Statistic;
-import org.bukkit.entity.Player;
-
 import java.util.Arrays;
 import java.util.Map;
+import org.bukkit.entity.Player;
 
 public class StatUser extends SpectatorUser {
 
@@ -56,14 +55,16 @@ public class StatUser extends SpectatorUser {
             }
 
             @Override
-            public <Value> Stat<Value> addStat(StatType<Value> type, Map<StatPeriod, Value> values) {
+            public <Value> Stat<Value> addStat(StatType<Value> type,
+                    Map<StatPeriod, Value> values) {
                 GameStat<Value> stat = new GameStat<>(dbStats, type, values);
                 this.statsByName.put(type.getName(), stat);
                 return stat;
             }
         };
 
-        Map<StatType<?>, Map<StatPeriod, Object>> values = this.dbStats.get(Arrays.asList(StatPeriod.values()),
+        Map<StatType<?>, Map<StatPeriod, Object>> values = this.dbStats.get(
+                Arrays.asList(StatPeriod.values()),
                 GameServer.getGame().getStats().toArray(new StatType[0]));
 
         for (StatType<?> statType : GameServer.getGame().getStats()) {
@@ -75,7 +76,7 @@ public class StatUser extends SpectatorUser {
         this.stats.addStat(type, ((Map<StatPeriod, Value>) values));
     }
 
-    public GameUserStatistic getDbStats() {
+    public GameUserStatistic getDatabaseStats() {
         return dbStats;
     }
 
