@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.basic.game.util.game;
@@ -13,8 +13,11 @@ import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.database.util.object.Type;
 import de.timesnake.library.basic.util.statistics.StatType;
 import de.timesnake.library.game.GameInfo;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Game<Info extends GameInfo> {
 

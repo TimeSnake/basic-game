@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.basic.game.util.game;
@@ -7,11 +7,10 @@ package de.timesnake.basic.game.util.game;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Plugin;
 import de.timesnake.database.util.game.DbKit;
-import org.bukkit.Material;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.bukkit.Material;
 
 public class Kit {
 
