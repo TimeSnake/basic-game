@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.basic.game.util.game;
@@ -8,7 +8,6 @@ import de.timesnake.database.util.game.GameUserStatistic;
 import de.timesnake.library.basic.util.statistics.Stat;
 import de.timesnake.library.basic.util.statistics.StatPeriod;
 import de.timesnake.library.basic.util.statistics.StatType;
-
 import java.util.Map;
 
 public class GameStat<Value> extends Stat<Value> {

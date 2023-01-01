@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.basic.game.util.game;
@@ -11,9 +11,12 @@ import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.database.util.game.DbTmpGame;
 import de.timesnake.database.util.object.Type;
 import de.timesnake.library.game.TmpGameInfo;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.*;
 
 public class TmpGame extends Game<TmpGameInfo> {
 

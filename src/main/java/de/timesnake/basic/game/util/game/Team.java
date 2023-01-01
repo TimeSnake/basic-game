@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 timesnake
+ * Copyright (C) 2023 timesnake
  */
 
 package de.timesnake.basic.game.util.game;
@@ -7,16 +7,19 @@ package de.timesnake.basic.game.util.game;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Plugin;
 import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
-import de.timesnake.basic.bukkit.util.user.scoreboard.*;
+import de.timesnake.basic.bukkit.util.user.scoreboard.NameTagVisibility;
+import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
+import de.timesnake.basic.bukkit.util.user.scoreboard.TablistablePlayer;
+import de.timesnake.basic.bukkit.util.user.scoreboard.TagTablistableGroup;
+import de.timesnake.basic.bukkit.util.user.scoreboard.TagTablistableRemainTeam;
 import de.timesnake.basic.game.util.user.TeamUser;
 import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.chat.ExTextColor;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-
 import java.util.HashSet;
 import java.util.Set;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
 
 public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
 
