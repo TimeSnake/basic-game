@@ -21,8 +21,9 @@ public class TeamUser extends User {
     public TeamUser(Player player) {
         super(player);
         String teamName = this.getDatabase().getTeamName();
-        if (teamName != null && GameServer.getGame() instanceof TmpGame && ((TmpGame) GameServer.getGame()).hasTeam(teamName)) {
-            this.setTeam(((TmpGame) GameServer.getGame()).getTeam(teamName));
+        if (teamName != null && GameServer.getGame() instanceof TmpGame
+                && ((TmpGame) GameServer.getGame()).hasTeam(teamName)) {
+            this.setTeam(((TmpGame) GameServer.getGame()).getTeam(teamName), false);
             this.updateChatName();
         }
     }
@@ -38,7 +39,8 @@ public class TeamUser extends User {
     protected @NotNull Component getPlayerChatName() {
         Team team = this.getTeam();
 
-        if (team != null && (!(GameServer.getGame() instanceof TmpGame) || !((TmpGame) GameServer.getGame()).hideTeams())) {
+        if (team != null && (!(GameServer.getGame() instanceof TmpGame)
+                || !((TmpGame) GameServer.getGame()).hideTeams())) {
             return Component.text(this.getPlayer().getName(), team.getTextColor());
         }
         return super.getPlayerChatName();
@@ -81,7 +83,8 @@ public class TeamUser extends User {
 
     @Override
     public TablistableGroup getTablistGroup(TablistGroupType type) {
-        return Team.getTablistTeamType().equals(type) ? this.getTeam() : super.getTablistGroup(type);
+        return Team.getTablistTeamType().equals(type) ? this.getTeam()
+                : super.getTablistGroup(type);
     }
 
     public void updateTeam() {
