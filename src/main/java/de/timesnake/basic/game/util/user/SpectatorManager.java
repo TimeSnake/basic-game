@@ -19,13 +19,13 @@ import de.timesnake.basic.bukkit.util.user.event.UserInventoryClickListener;
 import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserInventoryInteractListener;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
-import de.timesnake.basic.bukkit.util.user.event.UserQuitEvent;
 import de.timesnake.basic.bukkit.util.user.scoreboard.ItemHoldClick;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.extension.util.player.UserMap;
 import de.timesnake.library.packets.util.listener.PacketHandler;
 import de.timesnake.library.packets.util.listener.PacketPlayOutListener;
 import de.timesnake.library.packets.util.packet.ExPacket;
@@ -42,7 +42,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,7 +65,7 @@ public abstract class SpectatorManager implements UserInventoryClickListener,
 
     private static final Integer LEAVE_TIME = 2000;
 
-    private final HashMap<User, ItemHoldClick> clickedLeaveUsers = new HashMap<>();
+    private final UserMap<User, ItemHoldClick> clickedLeaveUsers = new UserMap<>();
     private final HashMap<Integer, User> userHeadsById = new HashMap<>();
     private final Set<User> clickCooldownUsers = new HashSet<>();
 
@@ -195,8 +194,7 @@ public abstract class SpectatorManager implements UserInventoryClickListener,
             user.openGameUserInventory();
         } else if (clickedItem.equals(LEAVE_ITEM)) {
 
-            if (e.getAction() == Action.RIGHT_CLICK_BLOCK
-                    || e.getAction() == Action.RIGHT_CLICK_AIR) {
+            if (e.getAction().isRightClick()) {
                 if (!this.clickedLeaveUsers.containsKey(user)) {
                     this.clickedLeaveUsers.put(user, new ItemHoldClick(LEAVE_TIME));
                 } else {
@@ -244,11 +242,6 @@ public abstract class SpectatorManager implements UserInventoryClickListener,
 
         user.setItem(clickedItem);
         user.updateInventory();
-    }
-
-    @EventHandler
-    public void onUserLeave(UserQuitEvent e) {
-        this.clickedLeaveUsers.remove(e.getUser());
     }
 
     @Override
