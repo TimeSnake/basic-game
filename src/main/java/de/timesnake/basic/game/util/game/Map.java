@@ -274,7 +274,7 @@ public class Map {
 
     public List<String> getAuthors(int length) {
         if (this.authors == null) {
-            return List.of();
+            return List.of(Server.NETWORK_NAME + " Community");
         }
         LinkedList<String> authors = new LinkedList<>();
         Iterator<String> author = this.authors.iterator();
