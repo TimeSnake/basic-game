@@ -15,7 +15,7 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.TagTablistableRemainTeam;
 import de.timesnake.basic.game.util.user.TeamUser;
 import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.library.basic.util.Status;
-import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.chat.ExTextColor;
 import java.util.HashSet;
 import java.util.Set;
 import org.bukkit.ChatColor;
