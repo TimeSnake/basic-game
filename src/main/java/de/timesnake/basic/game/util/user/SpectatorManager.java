@@ -8,20 +8,19 @@ import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import de.timesnake.basic.bukkit.core.main.BasicBukkit;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Chat;
-import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
-import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.EntityDamageByUserEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserAttemptPickupItemEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
+import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
+import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
+import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryClickEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryClickListener;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractEvent;
 import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractListener;
-import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
 import de.timesnake.basic.bukkit.util.user.scoreboard.ItemHoldClick;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
-import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
@@ -42,7 +41,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class SpectatorManager implements UserInventoryClickListener,
@@ -315,10 +313,6 @@ public abstract class SpectatorManager implements UserInventoryClickListener,
             e.setCancelled(true);
         }
     }
-
-    public abstract @NotNull Tablist getGameTablist();
-
-    public abstract @Nullable Sideboard getGameSideboard();
 
     public abstract @Nullable Sideboard getSpectatorSideboard();
 

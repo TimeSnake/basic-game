@@ -84,7 +84,7 @@ public abstract class SpectatorUser extends TeamUser {
             }
         }
 
-        if (GameServer.getSpectatorManager().getGameTablist() instanceof TeamTablist tablist) {
+        if (GameServer.getGameTablist() instanceof TeamTablist tablist) {
             // set tablist team
             if (!(GameServer.getGame() instanceof TmpGame)
                     || !((TmpGame) GameServer.getGame()).hideTeams()
@@ -98,8 +98,8 @@ public abstract class SpectatorUser extends TeamUser {
             this.teleportToSpectatorSpawn();
         }
 
-        this.setSideboard(GameServer.getSpectatorManager().getSpectatorSideboard());
         this.resetSideboard();
+        this.setSideboard(GameServer.getSpectatorManager().getSpectatorSideboard());
 
         if (!GameServer.getSpectatorManager().loadTools()) {
             return;
@@ -174,7 +174,7 @@ public abstract class SpectatorUser extends TeamUser {
 
         this.setStatus(newStatus);
 
-        GameServer.getSpectatorManager().getGameTablist().addEntry(this);
+        GameServer.getGameTablist().addEntry(this);
 
         Chat spectatorChat = GameServer.getSpectatorManager().getSpectatorChat();
         if (spectatorChat != null) {
@@ -201,7 +201,7 @@ public abstract class SpectatorUser extends TeamUser {
 
         this.setRejoinInventory();
 
-        this.setSideboard(GameServer.getSpectatorManager().getGameSideboard());
+        this.setSideboard(GameServer.getGameSideboard());
     }
 
     public void hideSpectators() {

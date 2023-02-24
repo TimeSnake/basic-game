@@ -92,16 +92,20 @@ public class Map {
     private void loadWorld() {
         this.world = Server.getWorld(this.worldName);
         if (this.world == null) {
-            Server.printWarning(Plugin.BUKKIT, "Map-World " + this.worldName + " of map " + this.name +
-                    " could not loaded, world not exists", "Game", "Map");
+            Server.printWarning(Plugin.BUKKIT,
+                    "Map-World " + this.worldName + " of map " + this.name +
+                            " could not loaded, world not exists", "Game", "Map");
         } else {
-            for (java.util.Map.Entry<Integer, DbLocation> entry : this.getDatabase().getMapLocations().entrySet()) {
+            for (java.util.Map.Entry<Integer, DbLocation> entry : this.getDatabase()
+                    .getMapLocations().entrySet()) {
 
                 try {
-                    this.locationsById.put(entry.getKey(), Server.getExLocationFromDbLocation(entry.getValue()));
+                    this.locationsById.put(entry.getKey(),
+                            Server.getExLocationFromDbLocation(entry.getValue()));
                 } catch (WorldNotExistException var4) {
-                    Server.printWarning(Plugin.BUKKIT, "Map " + this.worldName + " can not load location " +
-                            entry.getKey(), "Game", "Map");
+                    Server.printWarning(Plugin.BUKKIT,
+                            "Map " + this.worldName + " can not load location " +
+                                    entry.getKey(), "Game", "Map");
                 }
             }
 
@@ -203,12 +207,14 @@ public class Map {
 
     public List<ExLocation> getLocations(int begin) {
         return this.locationsById.entrySet().stream().filter(
-                e -> e.getKey() >= begin).map(java.util.Map.Entry::getValue).collect(Collectors.toList());
+                        e -> e.getKey() >= begin).map(java.util.Map.Entry::getValue)
+                .collect(Collectors.toList());
     }
 
     public List<ExLocation> getLocations(int begin, int end) {
         return this.locationsById.entrySet().stream().filter(
-                e -> e.getKey() >= begin && e.getKey() < end).map(java.util.Map.Entry::getValue).collect(Collectors.toList());
+                        e -> e.getKey() >= begin && e.getKey() < end).map(java.util.Map.Entry::getValue)
+                .collect(Collectors.toList());
     }
 
     public Collection<Integer> getLocationIds() {

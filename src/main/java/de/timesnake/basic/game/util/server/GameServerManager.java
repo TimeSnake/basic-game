@@ -8,6 +8,8 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.ServerManager;
 import de.timesnake.basic.bukkit.util.chat.Plugin;
 import de.timesnake.basic.bukkit.util.user.User;
+import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
+import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
 import de.timesnake.basic.game.util.game.NonTmpGame;
 import de.timesnake.basic.game.util.game.TmpGame;
 import de.timesnake.basic.game.util.user.SpectatorManager;
@@ -18,7 +20,8 @@ import de.timesnake.database.util.Database;
 import de.timesnake.database.util.game.DbGame;
 import org.bukkit.entity.Player;
 
-public abstract class GameServerManager<Game extends de.timesnake.basic.game.util.game.Game<?>> extends ServerManager {
+public abstract class GameServerManager<Game extends de.timesnake.basic.game.util.game.Game<?>> extends
+        ServerManager {
 
     public static GameServerManager<?> getInstance() {
         return (GameServerManager<?>) ServerManager.getInstance();
@@ -75,5 +78,9 @@ public abstract class GameServerManager<Game extends de.timesnake.basic.game.uti
     public User loadUser(Player player) {
         return new TeamUser(player);
     }
+
+    public abstract Sideboard getGameSideboard();
+
+    public abstract Tablist getGameTablist();
 
 }
