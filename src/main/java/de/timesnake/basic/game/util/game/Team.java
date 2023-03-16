@@ -61,20 +61,25 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
     private final String tablistRank;
     private final float ratio;
     private final boolean privateChat;
+    private final Integer minSize;
     private Set<TeamUser> users = new HashSet<>();
     private Integer deaths = 0;
     private Integer kills = 0;
 
-    public Team(String name, Integer rank, String displayName, ExTextColor textColor, Color color, float ratio, boolean privateChat) throws UnsupportedGroupRankException {
+    public Team(String name, Integer rank, String displayName, ExTextColor textColor, Color color,
+            float ratio, boolean privateChat, int minSize) throws UnsupportedGroupRankException {
         this.database = null;
         this.name = name;
         this.rank = rank;
         this.displayName = displayName;
         this.textColor = textColor;
-        this.chatColor = de.timesnake.basic.bukkit.util.chat.ChatColor.translateFromExTextColor(textColor);
+        this.chatColor = de.timesnake.basic.bukkit.util.chat.ChatColor.translateFromExTextColor(
+                textColor);
         this.color = color;
         this.ratio = ratio;
         this.privateChat = privateChat;
+        this.minSize = minSize;
+
         if (String.valueOf(this.rank).length() > RANK_LENGTH) {
             throw new UnsupportedGroupRankException(this.name, this.rank);
         } else {
@@ -84,7 +89,9 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
 
             this.tablistRank = sb.append(this.rank).toString();
             Server.printText(Plugin.BUKKIT,
-                    "Loaded team " + this.name + ": " + this.displayName + "; " + this.textColor.asHexString() + "; " + this.color.toString() + "; " + this.tablistRank + "; " + this.ratio, "Team");
+                    "Loaded team " + this.name + ": " + this.displayName + "; "
+                            + this.textColor.asHexString() + "; " + this.color.toString() + "; "
+                            + this.tablistRank + "; " + this.ratio, "Team");
         }
     }
 
@@ -97,10 +104,13 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
         this.rank = team.getRank();
         this.displayName = team.getPrefix();
         this.textColor = team.getChatColor() != null ? team.getChatColor() : ExTextColor.WHITE;
-        this.chatColor = de.timesnake.basic.bukkit.util.chat.ChatColor.translateFromExTextColor(this.textColor);
+        this.chatColor = de.timesnake.basic.bukkit.util.chat.ChatColor.translateFromExTextColor(
+                this.textColor);
         this.color = parseColor(team.getColorName());
         this.ratio = team.getRatio();
         this.privateChat = team.hasPrivateChat();
+        this.minSize = team.getMinSize();
+
         if (String.valueOf(this.rank).length() > 6) {
             throw new UnsupportedGroupRankException(this.name, this.rank);
         }
@@ -111,7 +121,9 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
 
         this.tablistRank = sb.append(this.rank).toString();
         Server.printText(Plugin.BUKKIT,
-                "Loaded team " + this.name + ": " + this.displayName + "; " + this.textColor.toString() + "; " + this.color.toString() + "; " + this.tablistRank + "; " + this.ratio, "Team");
+                "Loaded team " + this.name + ": " + this.displayName + "; "
+                        + this.textColor + "; " + this.color.toString() + "; "
+                        + this.tablistRank + "; " + this.ratio, "Team");
     }
 
     public String getName() {
@@ -170,6 +182,14 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
 
     public boolean hasPrivateChat() {
         return privateChat;
+    }
+
+    public int getMinSize() {
+        return minSize;
+    }
+
+    public boolean hasMinSize() {
+        return minSize != null;
     }
 
     public void addDeath() {
@@ -245,7 +265,8 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
 
 
     @Override
-    public NameTagVisibility isNameTagVisibleBy(TablistablePlayer player, TablistableGroup otherGroup) {
+    public NameTagVisibility isNameTagVisibleBy(TablistablePlayer player,
+            TablistableGroup otherGroup) {
         return NameTagVisibility.ALWAYS;
     }
 
