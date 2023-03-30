@@ -5,7 +5,6 @@
 package de.timesnake.basic.game.util.game;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.Plugin;
 import de.timesnake.basic.bukkit.util.exception.LocationNotInWorldException;
 import de.timesnake.basic.bukkit.util.exception.WorldNotExistException;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
@@ -13,6 +12,7 @@ import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.database.util.game.DbMap;
 import de.timesnake.database.util.object.DbLocation;
+import de.timesnake.library.basic.util.Loggers;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -55,8 +55,7 @@ public class Map {
             try {
                 item = new ExItemStack(Material.getMaterial(materialName));
             } catch (IllegalArgumentException var6) {
-                Server.printWarning(Plugin.BUKKIT, "Can not load item for map " + this.getName(),
-                        "Game", "Map");
+                Loggers.MAPS.warning("Can not load item for map " + this.getName());
                 item = new ExItemStack(new ExItemStack(Material.MAP));
             }
             this.item = item;
@@ -92,9 +91,8 @@ public class Map {
     private void loadWorld() {
         this.world = Server.getWorld(this.worldName);
         if (this.world == null) {
-            Server.printWarning(Plugin.BUKKIT,
-                    "Map-World " + this.worldName + " of map " + this.name +
-                            " could not loaded, world not exists", "Game", "Map");
+            Loggers.MAPS.warning("Map-World " + this.worldName + " of map " + this.name +
+                    " could not loaded, world not exists");
         } else {
             for (java.util.Map.Entry<Integer, DbLocation> entry : this.getDatabase()
                     .getMapLocations().entrySet()) {
@@ -103,13 +101,12 @@ public class Map {
                     this.locationsById.put(entry.getKey(),
                             Server.getExLocationFromDbLocation(entry.getValue()));
                 } catch (WorldNotExistException var4) {
-                    Server.printWarning(Plugin.BUKKIT,
-                            "Map " + this.worldName + " can not load location " +
-                                    entry.getKey(), "Game", "Map");
+                    Loggers.MAPS.warning("Map " + this.worldName + " can not load location " +
+                            entry.getKey());
                 }
             }
 
-            Server.printText(Plugin.BUKKIT, "Loaded locations of map " + this.name, "Game", "Map");
+            Loggers.MAPS.info("Loaded locations of map " + this.name);
         }
     }
 

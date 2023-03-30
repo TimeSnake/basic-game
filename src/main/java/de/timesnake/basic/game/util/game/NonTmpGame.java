@@ -15,31 +15,59 @@ public class NonTmpGame extends Game<NonTmpGameInfo> {
         super(database, new NonTmpGameInfo(database.getInfo()), loadWorlds);
     }
 
-    public boolean isCreationRequestable() {return getInfo().isCreationRequestable();}
+    public boolean isCreationRequestable() {
+        return getInfo().isCreationRequestable();
+    }
 
-    public boolean isOwnable() {return getInfo().isOwnable();}
+    public boolean isOwnable() {
+        return getInfo().isOwnable();
+    }
 
     public boolean isNetherAndEndAllowed() {
         return getInfo().isNetherAndEndAllowed();
     }
 
-    public String getName() {return getInfo().getName();}
+    public String getName() {
+        return getInfo().getName();
+    }
 
-    public String getDisplayName() {return getInfo().getDisplayName();}
+    public String getDisplayName() {
+        return getInfo().getDisplayName();
+    }
 
-    public Integer getMaxPlayers() {return getInfo().getMaxPlayers();}
+    public Integer getMaxPlayers() {
+        return getInfo().getMaxPlayers();
+    }
 
-    public String getHeadLine() {return getInfo().getHeadLine();}
+    public String getHeadLine() {
+        return getInfo().getHeadLine();
+    }
 
-    public ItemStack getItem() {return getInfo().getItem();}
+    public ItemStack getItem() {
+        return getInfo().getItem();
+    }
 
-    public Integer getSlot() {return getInfo().getSlot();}
+    public Integer getSlot() {
+        return getInfo().getSlot();
+    }
 
-    public Type.Availability getMapAvailability() {return getInfo().getMapAvailability();}
+    public boolean isEnabled() {
+        return getInfo().isEnabled();
+    }
 
-    public Type.Availability getKitAvailability() {return getInfo().getKitAvailability();}
+    public Type.Availability getMapAvailability() {
+        return getInfo().getMapAvailability();
+    }
 
-    public String getTexturePackLink() {return getInfo().getTexturePackLink();}
+    public Type.Availability getKitAvailability() {
+        return getInfo().getKitAvailability();
+    }
 
-    public Boolean hasTexturePack() {return getInfo().hasTexturePack();}
+    public String getTexturePackLink() {
+        return getInfo().getTexturePackLink();
+    }
+
+    public Boolean hasTexturePack() {
+        return getInfo().hasTexturePack();
+    }
 }
