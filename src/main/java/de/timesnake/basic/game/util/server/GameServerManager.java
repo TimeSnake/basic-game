@@ -6,7 +6,6 @@ package de.timesnake.basic.game.util.server;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.ServerManager;
-import de.timesnake.basic.bukkit.util.chat.Plugin;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
@@ -18,6 +17,7 @@ import de.timesnake.database.core.game.DbNonTmpGame;
 import de.timesnake.database.core.game.DbTmpGame;
 import de.timesnake.database.util.Database;
 import de.timesnake.database.util.game.DbGame;
+import de.timesnake.library.basic.util.Loggers;
 import org.bukkit.entity.Player;
 
 public abstract class GameServerManager<Game extends de.timesnake.basic.game.util.game.Game<?>> extends
@@ -37,7 +37,7 @@ public abstract class GameServerManager<Game extends de.timesnake.basic.game.uti
         if (dbGame != null && dbGame.exists()) {
             this.game = this.loadGame(dbGame, false);
         } else {
-            Server.printWarning(Plugin.BUKKIT, "Can not load game");
+            Loggers.SYSTEM.warning("Can not load game");
         }
 
         this.spectatorManager = this.loadSpectatorManager();
@@ -67,7 +67,7 @@ public abstract class GameServerManager<Game extends de.timesnake.basic.game.uti
     public final DbGame getDbGame() {
         String task = Server.getTask();
         if (task == null) {
-            Server.printWarning(Plugin.BUKKIT, "Task is null");
+            Loggers.SYSTEM.warning("Task is null");
             return null;
         } else {
             return Database.getGames().getGame(task);

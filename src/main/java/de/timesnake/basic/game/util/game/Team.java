@@ -4,8 +4,6 @@
 
 package de.timesnake.basic.game.util.game;
 
-import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.Plugin;
 import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
 import de.timesnake.basic.bukkit.util.user.scoreboard.NameTagVisibility;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
@@ -14,6 +12,7 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.TagTablistableGroup;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TagTablistableRemainTeam;
 import de.timesnake.basic.game.util.user.TeamUser;
 import de.timesnake.database.util.game.DbTeam;
+import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
 import java.util.HashSet;
@@ -88,10 +87,9 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
             sb.append("0".repeat(Math.max(0, RANK_LENGTH - String.valueOf(this.rank).length())));
 
             this.tablistRank = sb.append(this.rank).toString();
-            Server.printText(Plugin.BUKKIT,
-                    "Loaded team " + this.name + ": " + this.displayName + "; "
-                            + this.textColor.asHexString() + "; " + this.color.toString() + "; "
-                            + this.tablistRank + "; " + this.ratio, "Team");
+            Loggers.TEAMS.info("Loaded team " + this.name + ": " + this.displayName + "; "
+                    + this.textColor.asHexString() + "; " + this.color.toString() + "; "
+                    + this.tablistRank + "; " + this.ratio);
         }
     }
 
@@ -120,10 +118,9 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
         sb.append("0".repeat(Math.max(0, 6 - String.valueOf(this.rank).length())));
 
         this.tablistRank = sb.append(this.rank).toString();
-        Server.printText(Plugin.BUKKIT,
-                "Loaded team " + this.name + ": " + this.displayName + "; "
-                        + this.textColor + "; " + this.color.toString() + "; "
-                        + this.tablistRank + "; " + this.ratio, "Team");
+        Loggers.TEAMS.info("Loaded team " + this.name + ": " + this.displayName + "; "
+                + this.textColor + "; " + this.color.toString() + "; "
+                + this.tablistRank + "; " + this.ratio);
     }
 
     public String getName() {

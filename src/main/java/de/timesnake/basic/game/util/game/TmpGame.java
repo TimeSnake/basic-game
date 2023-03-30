@@ -4,12 +4,11 @@
 
 package de.timesnake.basic.game.util.game;
 
-import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.Plugin;
 import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
 import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.database.util.game.DbTmpGame;
 import de.timesnake.database.util.object.Type;
+import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.game.TmpGameInfo;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,8 +32,7 @@ public class TmpGame extends Game<TmpGameInfo> {
             try {
                 team = this.loadTeam(dbTeam);
             } catch (UnsupportedGroupRankException e) {
-                Server.printWarning(Plugin.BUKKIT,
-                        de.timesnake.basic.bukkit.util.chat.ChatColor.WARNING + e.getMessage());
+                Loggers.GROUPS.warning(e.getMessage());
                 continue;
             }
 
@@ -128,6 +126,10 @@ public class TmpGame extends Game<TmpGameInfo> {
 
     public Integer getSlot() {
         return getInfo().getSlot();
+    }
+
+    public boolean isEnabled() {
+        return getInfo().isEnabled();
     }
 
     public Type.Availability getMapAvailability() {

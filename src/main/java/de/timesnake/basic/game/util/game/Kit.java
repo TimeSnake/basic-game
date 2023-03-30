@@ -4,9 +4,8 @@
 
 package de.timesnake.basic.game.util.game;
 
-import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.Plugin;
 import de.timesnake.database.util.game.DbKit;
+import de.timesnake.library.basic.util.Loggers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,7 +13,8 @@ import org.bukkit.Material;
 
 public class Kit {
 
-    public static final Kit RANDOM = new Kit(0, "Random", Material.GRAY_WOOL, List.of("§7Click to get a random kit"));
+    public static final Kit RANDOM = new Kit(0, "Random", Material.GRAY_WOOL,
+            List.of("§7Click to get a random kit"));
 
 
     private final Integer id;
@@ -46,7 +46,7 @@ public class Kit {
         try {
             this.material = Material.getMaterial(materialName);
         } catch (IllegalArgumentException var4) {
-            Server.printWarning(Plugin.BUKKIT, "Error while loading item for kit " + this.getName(), "Kit");
+            Loggers.KITS.warning("Error while loading item for kit " + this.getName());
         }
 
     }
