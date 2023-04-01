@@ -40,10 +40,10 @@ public abstract class GameServerManager<Game extends de.timesnake.basic.game.uti
             Loggers.SYSTEM.warning("Can not load game");
         }
 
-        this.spectatorManager = this.loadSpectatorManager();
+        this.spectatorManager = this.initSpectatorManager();
     }
 
-    protected SpectatorManager loadSpectatorManager() {
+    protected SpectatorManager initSpectatorManager() {
         return null;
     }
 

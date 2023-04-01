@@ -44,8 +44,7 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class SpectatorManager implements UserInventoryClickListener,
-        UserInventoryInteractListener,
-        PacketPlayOutListener, Listener {
+        UserInventoryInteractListener, PacketPlayOutListener, Listener {
 
     // teleports the spectator to spawn if he goes lower than min height - value
     public static final Integer MAX_LOWER_THAN_MIN_HEIGHT = 10;
