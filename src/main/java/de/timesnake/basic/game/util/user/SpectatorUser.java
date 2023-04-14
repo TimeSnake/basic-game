@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class SpectatorUser extends TeamUser {
+public class SpectatorUser extends TeamUser {
 
     protected boolean glowingEnabled = false;
     protected boolean speedEnabled = false;
