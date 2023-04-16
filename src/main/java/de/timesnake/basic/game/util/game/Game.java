@@ -13,10 +13,12 @@ import de.timesnake.database.util.object.Type;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.statistics.StatType;
 import de.timesnake.library.game.GameInfo;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class Game<Info extends GameInfo> {
@@ -25,7 +27,7 @@ public class Game<Info extends GameInfo> {
 
     protected final Info info;
 
-    protected final ArrayList<Kit> kits;
+    protected final List<Kit> kits;
 
     protected final HashMap<String, Map> maps = new HashMap<>();
 
@@ -36,16 +38,11 @@ public class Game<Info extends GameInfo> {
         this.database = database;
         this.info = info;
 
-        this.kits = new ArrayList<>();
+        this.kits = new LinkedList<>();
 
         if (this.info.getKitAvailability().equals(Type.Availability.ALLOWED)
                 || this.info.getKitAvailability().equals(Type.Availability.REQUIRED)) {
-            for (DbKit dbKit : database.getKits()) {
-                Kit kit = this.loadKit(dbKit);
-                if (kit != null) {
-                    this.kits.add(kit);
-                }
-            }
+            this.loadKits(database);
         }
 
         this.loadMaps(loadWorlds);
@@ -103,8 +100,14 @@ public class Game<Info extends GameInfo> {
         return new Team(team);
     }
 
-    public Kit loadKit(DbKit dbKit) {
-        return new Kit(dbKit);
+    public void loadKits(DbGame database) {
+        for (DbKit dbKit : database.getKits()) {
+            this.loadKit(dbKit).ifPresent(this.kits::add);
+        }
+    }
+
+    public Optional<? extends Kit> loadKit(DbKit dbKit) {
+        return Optional.of(new Kit(dbKit));
     }
 
     public DbGame getDatabase() {

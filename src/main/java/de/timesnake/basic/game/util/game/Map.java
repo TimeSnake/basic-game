@@ -203,14 +203,23 @@ public class Map {
     }
 
     public List<ExLocation> getLocations(int begin) {
-        return this.locationsById.entrySet().stream().filter(
-                        e -> e.getKey() >= begin).map(java.util.Map.Entry::getValue)
+        return this.locationsById.entrySet().stream()
+                .filter(e -> e.getKey() >= begin)
+                .map(java.util.Map.Entry::getValue)
                 .collect(Collectors.toList());
     }
 
     public List<ExLocation> getLocations(int begin, int end) {
-        return this.locationsById.entrySet().stream().filter(
-                        e -> e.getKey() >= begin && e.getKey() < end).map(java.util.Map.Entry::getValue)
+        return this.locationsById.entrySet().stream()
+                .filter(e -> e.getKey() >= begin && e.getKey() < end)
+                .map(java.util.Map.Entry::getValue)
+                .collect(Collectors.toList());
+    }
+
+    public List<ExLocation> getLocations(Collection<Integer> ids) {
+        return this.locationsById.entrySet().stream()
+                .filter(e -> ids.contains(e.getKey()))
+                .map(java.util.Map.Entry::getValue)
                 .collect(Collectors.toList());
     }
 
