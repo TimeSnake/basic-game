@@ -164,7 +164,6 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
         return this.chatColor;
     }
 
-    @Deprecated
     public ChatColor getChatColor() {
         return chatColor;
     }

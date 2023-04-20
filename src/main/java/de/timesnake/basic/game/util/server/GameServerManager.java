@@ -37,7 +37,7 @@ public abstract class GameServerManager<Game extends de.timesnake.basic.game.uti
         if (dbGame != null && dbGame.exists()) {
             this.game = this.loadGame(dbGame, false);
         } else {
-            Loggers.SYSTEM.warning("Can not load game");
+            Loggers.SYSTEM.warning("Could not load game");
         }
 
         this.spectatorManager = this.initSpectatorManager();
