@@ -1,5 +1,11 @@
+group = project.group
+version = '1.0-SNAPSHOT'
+archivesBaseName = 'basic-game'
+var projectId = 54
+
 repositories {
   mavenLocal()
+  mavenCentral()
   maven {
     url = uri 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
   }
@@ -34,6 +40,14 @@ dependencies {
   compileOnly project.spigot
 }
 
-group = project.group
-version = '1.0-SNAPSHOT'
-archivesBaseName = 'basic-game'
+publishing {
+  repositories {
+    maven {
+      url getDeployUrl(projectId)
+      credentials {
+        username = deploy_token_name
+        password = deploy_token_key
+      }
+    }
+  }
+}
