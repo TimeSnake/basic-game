@@ -21,66 +21,66 @@ import de.timesnake.library.basic.util.Loggers;
 import org.bukkit.entity.Player;
 
 public abstract class GameServerManager<Game extends de.timesnake.basic.game.util.game.Game<?>> extends
-        ServerManager {
+    ServerManager {
 
-    public static GameServerManager<?> getInstance() {
-        return (GameServerManager<?>) ServerManager.getInstance();
+  public static GameServerManager<?> getInstance() {
+    return (GameServerManager<?>) ServerManager.getInstance();
+  }
+
+  protected Game game;
+
+  private SpectatorManager spectatorManager;
+
+  public final void onGameEnable() {
+
+    DbGame dbGame = this.getDbGame();
+    if (dbGame != null && dbGame.exists()) {
+      this.game = this.loadGame(dbGame, false);
+    } else {
+      Loggers.SYSTEM.warning("Could not load game");
     }
 
-    protected Game game;
+    this.spectatorManager = this.initSpectatorManager();
+  }
 
-    private SpectatorManager spectatorManager;
+  protected SpectatorManager initSpectatorManager() {
+    return null;
+  }
 
-    public final void onGameEnable() {
-
-        DbGame dbGame = this.getDbGame();
-        if (dbGame != null && dbGame.exists()) {
-            this.game = this.loadGame(dbGame, false);
-        } else {
-            Loggers.SYSTEM.warning("Could not load game");
-        }
-
-        this.spectatorManager = this.initSpectatorManager();
+  protected Game loadGame(DbGame dbGame, boolean loadWorlds) {
+    if (dbGame instanceof DbNonTmpGame) {
+      return (Game) new NonTmpGame(((DbNonTmpGame) dbGame), loadWorlds);
+    } else if (dbGame instanceof DbTmpGame) {
+      return (Game) new TmpGame(((DbTmpGame) dbGame), loadWorlds);
     }
+    return null;
+  }
 
-    protected SpectatorManager initSpectatorManager() {
-        return null;
+  public SpectatorManager getSpectatorManager() {
+    return spectatorManager;
+  }
+
+  public Game getGame() {
+    return this.game;
+  }
+
+  public final DbGame getDbGame() {
+    String task = Server.getTask();
+    if (task == null) {
+      Loggers.SYSTEM.warning("Task is null");
+      return null;
+    } else {
+      return Database.getGames().getGame(task);
     }
+  }
 
-    protected Game loadGame(DbGame dbGame, boolean loadWorlds) {
-        if (dbGame instanceof DbNonTmpGame) {
-            return (Game) new NonTmpGame(((DbNonTmpGame) dbGame), loadWorlds);
-        } else if (dbGame instanceof DbTmpGame) {
-            return (Game) new TmpGame(((DbTmpGame) dbGame), loadWorlds);
-        }
-        return null;
-    }
+  @Override
+  public User loadUser(Player player) {
+    return new TeamUser(player);
+  }
 
-    public SpectatorManager getSpectatorManager() {
-        return spectatorManager;
-    }
+  public abstract Sideboard getGameSideboard();
 
-    public Game getGame() {
-        return this.game;
-    }
-
-    public final DbGame getDbGame() {
-        String task = Server.getTask();
-        if (task == null) {
-            Loggers.SYSTEM.warning("Task is null");
-            return null;
-        } else {
-            return Database.getGames().getGame(task);
-        }
-    }
-
-    @Override
-    public User loadUser(Player player) {
-        return new TeamUser(player);
-    }
-
-    public abstract Sideboard getGameSideboard();
-
-    public abstract Tablist getGameTablist();
+  public abstract Tablist getGameTablist();
 
 }
