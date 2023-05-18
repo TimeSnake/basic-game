@@ -23,128 +23,128 @@ import java.util.Set;
 
 public class Game<Info extends GameInfo> {
 
-    protected final DbGame database;
+  protected final DbGame database;
 
-    protected final Info info;
+  protected final Info info;
 
-    protected final List<Kit> kits;
+  protected final List<Kit> kits;
 
-    protected final HashMap<String, Map> maps = new HashMap<>();
+  protected final HashMap<String, Map> maps = new HashMap<>();
 
-    protected final HashMap<Integer, HashMap<Integer, StatType<?>>> statByLineByDisplay = new HashMap<>();
-    protected final HashMap<Integer, HashMap<Integer, StatType<?>>> globalStatByLineByDisplay = new HashMap<>();
+  protected final HashMap<Integer, HashMap<Integer, StatType<?>>> statByLineByDisplay = new HashMap<>();
+  protected final HashMap<Integer, HashMap<Integer, StatType<?>>> globalStatByLineByDisplay = new HashMap<>();
 
-    public Game(DbGame database, Info info, boolean loadWorlds) {
-        this.database = database;
-        this.info = info;
+  public Game(DbGame database, Info info, boolean loadWorlds) {
+    this.database = database;
+    this.info = info;
 
-        this.kits = new LinkedList<>();
+    this.kits = new LinkedList<>();
 
-        if (this.info.getKitAvailability().equals(Type.Availability.ALLOWED)
-                || this.info.getKitAvailability().equals(Type.Availability.REQUIRED)) {
-            this.loadKits(database);
-        }
+    if (this.info.getKitAvailability().equals(Type.Availability.ALLOWED)
+        || this.info.getKitAvailability().equals(Type.Availability.REQUIRED)) {
+      this.loadKits(database);
+    }
 
-        this.loadMaps(loadWorlds);
+    this.loadMaps(loadWorlds);
 
-        for (StatType<?> stat : database.getStats()) {
-            Integer displayIndex = stat.getDisplayIndex();
-            Integer lineIndex = stat.getDisplayLineIndex();
+    for (StatType<?> stat : database.getStats()) {
+      Integer displayIndex = stat.getDisplayIndex();
+      Integer lineIndex = stat.getDisplayLineIndex();
 
-            this.statByLineByDisplay.computeIfAbsent(displayIndex, (i) -> new HashMap<>())
-                    .put(lineIndex, stat);
+      this.statByLineByDisplay.computeIfAbsent(displayIndex, (i) -> new HashMap<>())
+          .put(lineIndex, stat);
 
-            Integer globalDisplayIndex = stat.getGlobalDisplayIndex();
-            Integer globalLineIndex = stat.getGlobalDisplayLineIndex();
+      Integer globalDisplayIndex = stat.getGlobalDisplayIndex();
+      Integer globalLineIndex = stat.getGlobalDisplayLineIndex();
 
-            if (stat.getGlobalDisplay() && globalDisplayIndex != null && globalLineIndex != null) {
-                this.globalStatByLineByDisplay.computeIfAbsent(globalDisplayIndex,
-                        (i) -> new HashMap<>()).put(globalLineIndex, stat);
+      if (stat.getGlobalDisplay() && globalDisplayIndex != null && globalLineIndex != null) {
+        this.globalStatByLineByDisplay.computeIfAbsent(globalDisplayIndex,
+            (i) -> new HashMap<>()).put(globalLineIndex, stat);
+      }
+    }
+
+  }
+
+  public final void loadMaps(boolean loadWorlds) {
+    if (this.info.getMapAvailability().equals(Type.Availability.REQUIRED)
+        || this.info.getMapAvailability().equals(Type.Availability.ALLOWED)) {
+
+      this.maps.clear();
+
+      for (DbMap dbMap : this.database.getMaps()) {
+        if (dbMap.isEnabled()) {
+          Map map = this.loadMap(dbMap.toLocal(), loadWorlds);
+          if (map != null) {
+            this.maps.put(map.getName(), map);
+            if (loadWorlds && map.getWorld() != null) {
+              Loggers.MAPS.info(
+                  "Loaded map " + map.getName() + " (world: " + map.getWorld()
+                      .getName() + ")");
+            } else {
+              Loggers.MAPS.info("Loaded map " + map.getName());
             }
+          }
+        } else {
+          Loggers.MAPS.info("NOT loaded map " + dbMap.getName() + " (disabled)");
         }
-
+      }
     }
 
-    public final void loadMaps(boolean loadWorlds) {
-        if (this.info.getMapAvailability().equals(Type.Availability.REQUIRED)
-                || this.info.getMapAvailability().equals(Type.Availability.ALLOWED)) {
+  }
 
-            this.maps.clear();
+  public Map loadMap(DbMap dbMap, boolean loadWorld) {
+    return new Map(dbMap, loadWorld);
+  }
 
-            for (DbMap dbMap : this.database.getMaps()) {
-                if (dbMap.isEnabled()) {
-                    Map map = this.loadMap(dbMap.toLocal(), loadWorlds);
-                    if (map != null) {
-                        this.maps.put(map.getName(), map);
-                        if (loadWorlds && map.getWorld() != null) {
-                            Loggers.MAPS.info(
-                                    "Loaded map " + map.getName() + " (world: " + map.getWorld()
-                                            .getName() + ")");
-                        } else {
-                            Loggers.MAPS.info("Loaded map " + map.getName());
-                        }
-                    }
-                } else {
-                    Loggers.MAPS.info("NOT loaded map " + dbMap.getName() + " (disabled)");
-                }
-            }
-        }
+  public Team loadTeam(DbTeam team) throws UnsupportedGroupRankException {
+    return new Team(team);
+  }
 
+  public void loadKits(DbGame database) {
+    for (DbKit dbKit : database.getKits()) {
+      this.loadKit(dbKit).ifPresent(this.kits::add);
     }
+  }
 
-    public Map loadMap(DbMap dbMap, boolean loadWorld) {
-        return new Map(dbMap, loadWorld);
-    }
+  public Optional<? extends Kit> loadKit(DbKit dbKit) {
+    return Optional.of(new Kit(dbKit));
+  }
 
-    public Team loadTeam(DbTeam team) throws UnsupportedGroupRankException {
-        return new Team(team);
-    }
+  public DbGame getDatabase() {
+    return database;
+  }
 
-    public void loadKits(DbGame database) {
-        for (DbKit dbKit : database.getKits()) {
-            this.loadKit(dbKit).ifPresent(this.kits::add);
-        }
-    }
+  public Info getInfo() {
+    return info;
+  }
 
-    public Optional<? extends Kit> loadKit(DbKit dbKit) {
-        return Optional.of(new Kit(dbKit));
-    }
+  public Collection<? extends Map> getMaps() {
+    return this.maps.values();
+  }
 
-    public DbGame getDatabase() {
-        return database;
-    }
+  public Map getMap(String mapName) {
+    return this.maps.get(mapName);
+  }
 
-    public Info getInfo() {
-        return info;
-    }
+  public Collection<? extends Kit> getKits() {
+    return this.kits;
+  }
 
-    public Collection<? extends Map> getMaps() {
-        return this.maps.values();
-    }
+  public Kit getKit(int index) {
+    return this.kits.get(index);
+  }
 
-    public Map getMap(String mapName) {
-        return this.maps.get(mapName);
-    }
+  public Set<StatType<?>> getStats() {
+    Set<StatType<?>> stats = new HashSet<>();
+    this.statByLineByDisplay.forEach((key, list) -> stats.addAll(list.values()));
+    return stats;
+  }
 
-    public Collection<? extends Kit> getKits() {
-        return this.kits;
-    }
+  public HashMap<Integer, HashMap<Integer, StatType<?>>> getStatByLineByDisplay() {
+    return statByLineByDisplay;
+  }
 
-    public Kit getKit(int index) {
-        return this.kits.get(index);
-    }
-
-    public Set<StatType<?>> getStats() {
-        Set<StatType<?>> stats = new HashSet<>();
-        this.statByLineByDisplay.forEach((key, list) -> stats.addAll(list.values()));
-        return stats;
-    }
-
-    public HashMap<Integer, HashMap<Integer, StatType<?>>> getStatByLineByDisplay() {
-        return statByLineByDisplay;
-    }
-
-    public HashMap<Integer, HashMap<Integer, StatType<?>>> getGlobalStatByLineByDisplay() {
-        return globalStatByLineByDisplay;
-    }
+  public HashMap<Integer, HashMap<Integer, StatType<?>>> getGlobalStatByLineByDisplay() {
+    return globalStatByLineByDisplay;
+  }
 }
