@@ -13,35 +13,32 @@ import de.timesnake.basic.bukkit.util.user.event.EntityDamageByUserEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserAttemptPickupItemEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserDamageEvent;
 import de.timesnake.basic.bukkit.util.user.event.UserMoveEvent;
-import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
-import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
-import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryClickEvent;
-import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryClickListener;
-import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractEvent;
-import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryInteractListener;
+import de.timesnake.basic.bukkit.util.user.inventory.*;
 import de.timesnake.basic.bukkit.util.user.scoreboard.ItemHoldClick;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.player.UserMap;
+import de.timesnake.library.packets.core.packet.out.entity.ClientboundSetEntityDataPacketBuilder;
 import de.timesnake.library.packets.util.listener.PacketHandler;
 import de.timesnake.library.packets.util.listener.PacketPlayOutListener;
-import de.timesnake.library.packets.util.packet.ExPacket;
-import de.timesnake.library.packets.util.packet.ExPacketPlayOut;
-import de.timesnake.library.packets.util.packet.ExPacketPlayOutEntityMetadata;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import net.kyori.adventure.text.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class SpectatorManager implements UserInventoryClickListener,
     UserInventoryInteractListener, PacketPlayOutListener, Listener {
@@ -123,26 +120,20 @@ public abstract class SpectatorManager implements UserInventoryClickListener,
     receivers.addAll(Server.getOutGameUsers());
 
     for (User glowingUser : this.glowingUsers) {
-      ExPacketPlayOut packet = ExPacketPlayOutEntityMetadata.wrap(glowingUser.getPlayer(),
-          ExPacketPlayOutEntityMetadata.DataType.UPDATE);
+      Packet<?> packet = new ClientboundSetEntityDataPacketBuilder(glowingUser.getMinecraftPlayer()).build();
       for (User receiver : receivers) {
         receiver.sendPacket(packet);
       }
     }
   }
 
-  @PacketHandler(type = ExPacket.Type.PLAY_OUT_ENTITY_METADATA, modify = true)
-  public ExPacketPlayOut onPacketPlayOut(ExPacketPlayOut packet, Player receiver) {
-    if (!(packet instanceof ExPacketPlayOutEntityMetadata)) {
+  @PacketHandler(type = ClientboundSetEntityDataPacket.class, modify = true)
+  public Packet<?> onPacketPlayOut(Packet<?> packet, Player receiver) {
+    if (!(packet instanceof ClientboundSetEntityDataPacket dataPacket)) {
       return packet;
     }
 
-    Integer index = ((ExPacketPlayOutEntityMetadata) packet).getNMSIndex();
-    if (index == null || index != 0) {
-      return packet;
-    }
-
-    Integer entityId = ((ExPacketPlayOutEntityMetadata) packet).getEntityId();
+    int entityId = dataPacket.id();
 
     Player player = null;
     for (Player p : Bukkit.getOnlinePlayers()) {
@@ -168,8 +159,11 @@ public abstract class SpectatorManager implements UserInventoryClickListener,
       return packet;
     }
 
-    packet = ((ExPacketPlayOutEntityMetadata) packet).cloneByte();
-    ((ExPacketPlayOutEntityMetadata) packet).setGlowing(true);
+    packet = new ClientboundSetEntityDataPacketBuilder(((CraftPlayer) player).getHandle())
+        .update()
+        .setFlags(ClientboundSetEntityDataPacketBuilder.getFlagsOfPacket(dataPacket))
+        .setFlag(ClientboundSetEntityDataPacketBuilder.Type.GLOWING, true)
+        .build();
 
     return packet;
   }

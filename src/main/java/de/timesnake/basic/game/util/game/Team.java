@@ -5,20 +5,17 @@
 package de.timesnake.basic.game.util.game;
 
 import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
-import de.timesnake.basic.bukkit.util.user.scoreboard.NameTagVisibility;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TablistablePlayer;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TagTablistableGroup;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TagTablistableRemainTeam;
+import de.timesnake.basic.bukkit.util.user.scoreboard.*;
 import de.timesnake.basic.game.util.user.TeamUser;
 import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
-import java.util.HashSet;
-import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
 
@@ -66,7 +63,7 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
   private Integer kills = 0;
 
   public Team(String name, Integer rank, String displayName, ExTextColor textColor, Color color,
-      float ratio, boolean privateChat, int minSize) throws UnsupportedGroupRankException {
+              float ratio, boolean privateChat, int minSize) throws UnsupportedGroupRankException {
     this.database = null;
     this.name = name;
     this.rank = rank;
@@ -262,7 +259,7 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
 
   @Override
   public NameTagVisibility isNameTagVisibleBy(TablistablePlayer player,
-      TablistableGroup otherGroup) {
+                                              TablistableGroup otherGroup) {
     return NameTagVisibility.ALWAYS;
   }
 
