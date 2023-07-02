@@ -13,7 +13,7 @@ import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.game.util.game.TmpGame;
 import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.library.basic.util.Status;
-import de.timesnake.library.packets.util.packet.ExPacketPlayOutEntityEffect;
+import de.timesnake.library.packets.core.packet.out.entity.ClientboundSetEntityDataPacketBuilder;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,9 +49,6 @@ public class SpectatorUser extends TeamUser {
     this.lockInventory();
     this.lockInventoryItemMove();
 
-    this.glowingEnabled = true;
-    this.speedEnabled = false;
-
     Server.runTaskLaterSynchrony(() -> {
       this.setAllowFlight(true);
       this.setFlying(true);
@@ -65,15 +62,21 @@ public class SpectatorUser extends TeamUser {
 
         user.hideUser(this);
 
-        this.sendPacket(ExPacketPlayOutEntityEffect.wrap(user.getPlayer(),
-            ExPacketPlayOutEntityEffect.Effect.GLOWING, ((byte) 0), Integer.MAX_VALUE,
-            true, true, true));
+        if (this.glowingEnabled) {
+          this.sendPacket(new ClientboundSetEntityDataPacketBuilder(user.getMinecraftPlayer())
+              .update()
+              .setFlag(ClientboundSetEntityDataPacketBuilder.Type.GLOWING, true)
+              .build());
+        }
 
       } else if (Status.User.OUT_GAME.equals(user.getStatus())
           || Status.User.SPECTATOR.equals(user.getStatus())) {
         user.showUser(this);
       }
     }
+
+    this.setGlowingEnabled(true);
+    this.setSpeedEnabled(false);
 
     // remove from team chat
     if (this.getTeam() != null && this.getTeam().hasPrivateChat()) {
@@ -145,6 +148,12 @@ public class SpectatorUser extends TeamUser {
 
   public void setGlowingEnabled(boolean glowingEnabled) {
     this.glowingEnabled = glowingEnabled;
+
+    Server.getUsers(u -> u.hasStatus(Status.User.IN_GAME, Status.User.PRE_GAME, Status.User.ONLINE))
+        .forEach(u -> this.sendPacket(new ClientboundSetEntityDataPacketBuilder(u.getMinecraftPlayer())
+            .update()
+            .setFlag(ClientboundSetEntityDataPacketBuilder.Type.GLOWING, this.glowingEnabled)
+            .build()));
   }
 
   public void setSpeedEnabled(boolean speedEnabled) {
@@ -164,7 +173,7 @@ public class SpectatorUser extends TeamUser {
   }
 
   public void leaveSpectatorAndRejoin(@Nullable ExLocation location,
-      @NotNull Status.User newStatus) {
+                                      @NotNull Status.User newStatus) {
     this.glowingEnabled = false;
     this.speedEnabled = false;
 
