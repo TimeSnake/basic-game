@@ -17,6 +17,7 @@ import de.timesnake.basic.bukkit.util.user.inventory.*;
 import de.timesnake.basic.bukkit.util.user.scoreboard.ItemHoldClick;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
+import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.player.UserMap;
@@ -35,42 +36,92 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-public abstract class SpectatorManager implements UserInventoryClickListener,
-    UserInventoryInteractListener, PacketPlayOutListener, Listener {
+public abstract class SpectatorManager implements UserInventoryClickListener, PacketPlayOutListener, Listener {
 
   // teleports the spectator to spawn if he goes lower than min height - value
   public static final Integer MAX_LOWER_THAN_MIN_HEIGHT = 10;
+  private static final Integer LEAVE_TIME_MILLIS = 2000;
 
   public static final ExItemStack USER_INV = new ExItemStack(1, Material.PLAYER_HEAD,
-      "§9Teleporter").setMoveable(false).setDropable(false).immutable();
+      "§9Teleporter").setMoveable(false).setDropable(false).immutable()
+      .onInteract(event -> ((SpectatorUser) event.getUser()).openGameUserInventory(), true);
   public static final ExItemStack GLOWING = new ExItemStack(2, Material.SPECTRAL_ARROW,
-      "§6Glowing").setMoveable(false).setDropable(false).immutable();
+      "§6Glowing").setMoveable(false).setDropable(false).immutable()
+      .onInteract(event -> {
+        SpectatorUser user = ((SpectatorUser) event.getUser());
+        user.setGlowingEnabled(!user.hasGlowingEnabled());
+        if (user.hasGlowingEnabled()) {
+          user.sendPluginMessage(Plugin.GAME,
+              Component.text("Enabled glowing", ExTextColor.PERSONAL));
+          event.getClickedItem().enchant();
+        } else {
+          user.sendPluginMessage(Plugin.GAME,
+              Component.text("Disabled glowing", ExTextColor.PERSONAL));
+          event.getClickedItem().disenchant();
+        }
+        GameServer.getSpectatorManager().sendGlowUpdateToUser(user);
+        user.updateInventory();
+      }, true, true);
   public static final ExItemStack SPEED = new ExItemStack(3, Material.FEATHER, "§bSpeed")
-      .setMoveable(false).setDropable(false).immutable();
+      .setMoveable(false).setDropable(false).immutable()
+      .onInteract(event -> {
+        SpectatorUser user = ((SpectatorUser) event.getUser());
+        user.setSpeedEnabled(!user.hasSpeedEnabled());
+        if (user.hasSpeedEnabled()) {
+          user.sendPluginMessage(Plugin.GAME,
+              Component.text("Enabled speed", ExTextColor.PERSONAL));
+          event.getClickedItem().enchant();
+        } else {
+          user.sendPluginMessage(Plugin.GAME,
+              Component.text("Disabled speed", ExTextColor.PERSONAL));
+          event.getClickedItem().disenchant();
+        }
+        user.updateInventory();
+      }, true, true);
   public static final ExItemStack FLYING = new ExItemStack(4, Material.RABBIT_FOOT, "§9Flying")
-      .setMoveable(false).setDropable(false).immutable();
+      .setMoveable(false).setDropable(false).immutable()
+      .onInteract(event -> {
+        SpectatorUser user = ((SpectatorUser) event.getUser());
+        user.setFlyEnabled(!user.hasFlyEnabled());
+        user.sendPluginMessage(Plugin.GAME,
+            Component.text((user.getAllowFlight() ? "Enabled" : "Disabled") + " flying",
+                ExTextColor.PERSONAL));
+        if (user.getAllowFlight()) {
+          event.getClickedItem().enchant();
+        } else {
+          event.getClickedItem().disenchant();
+        }
+        user.updateInventory();
+      }, true, true);
   public static final ExItemStack LEAVE_ITEM = new ExItemStack(8, Material.ANVIL,
-      "§6Leave (hold right)").setMoveable(false).setDropable(false).immutable();
+      "§6Leave (hold right)").setMoveable(false).setDropable(false).immutable()
+      .onInteract(event -> {
+        SpectatorUser user = ((SpectatorUser) event.getUser());
+        if (event.getAction().isRightClick()) {
+          if (!GameServer.getSpectatorManager().clickedLeaveUsers.containsKey(user)) {
+            GameServer.getSpectatorManager().clickedLeaveUsers.put(user, new ItemHoldClick(LEAVE_TIME_MILLIS));
+          } else {
+            if (GameServer.getSpectatorManager().clickedLeaveUsers.get(user).click()) {
+              user.sendActionBarText(Component.empty());
+              user.switchToLobbyLast();
+            } else {
+              user.sendActionBarText(Component.text("Leaving...", ExTextColor.WARNING));
+            }
+          }
+        }
+      }, true);
 
-  private static final Integer LEAVE_TIME = 2000;
 
   private final UserMap<User, ItemHoldClick> clickedLeaveUsers = new UserMap<>();
   private final HashMap<Integer, User> userHeadsById = new HashMap<>();
-  private final Set<User> clickCooldownUsers = new HashSet<>();
-
   private ExInventory gameUserInv;
   private Set<User> glowingUsers = new HashSet<>();
 
   public SpectatorManager() {
     this.gameUserInv = new ExInventory(9, Component.text("Players"));
 
-    Server.getInventoryEventManager()
-        .addInteractListener(this, USER_INV, GLOWING, SPEED, FLYING, LEAVE_ITEM);
     Server.getPacketManager().addListener(this);
     Server.registerListener(this, BasicBukkit.getPlugin());
   }
@@ -87,14 +138,11 @@ public abstract class SpectatorManager implements UserInventoryClickListener,
   private void updateTeleportInventory() {
     Server.getInventoryEventManager().removeClickListener(this);
     int inGame = Server.getInGameUsers().size();
-    this.gameUserInv = new ExInventory(inGame == 0 ? 9 : (inGame + 8) / 9 * 9,
-        Component.text("Players"));
+    this.gameUserInv = new ExInventory(inGame, Component.text("Players"));
     this.userHeadsById.clear();
     int slot = 0;
     for (User user : Server.getInGameUsers()) {
-      ExItemStack head = ExItemStack.getHead(user.getPlayer(), user.getChatName())
-          .setLore("", "§7Click to " +
-              "teleport");
+      ExItemStack head = ExItemStack.getHead(user.getPlayer(), user.getTDChatName()).setLore("", "§7Click to " + "teleport");
       this.userHeadsById.put(head.getId(), user);
       this.gameUserInv.setItemStack(slot, head);
       Server.getInventoryEventManager().addClickListener(this, head);
@@ -106,30 +154,31 @@ public abstract class SpectatorManager implements UserInventoryClickListener,
     return gameUserInv;
   }
 
-  public void sendGlowUpdate() {
-    this.sendUpdatePackets();
+  public void sendGlowUpdateToUser(User user) {
+    this.sendUpdatePackets(user);
   }
 
   public void updateGlowingPlayers() {
     this.glowingUsers = new HashSet<>(Server.getInGameUsers());
-    this.sendUpdatePackets();
+    Server.getUsers(u -> u.hasStatus(Status.User.OUT_GAME, Status.User.SPECTATOR)).forEach(this::sendUpdatePackets);
   }
 
-  private void sendUpdatePackets() {
-    Collection<User> receivers = Server.getSpectatorUsers();
-    receivers.addAll(Server.getOutGameUsers());
-
+  private void sendUpdatePackets(User user) {
     for (User glowingUser : this.glowingUsers) {
-      Packet<?> packet = new ClientboundSetEntityDataPacketBuilder(glowingUser.getMinecraftPlayer()).build();
-      for (User receiver : receivers) {
-        receiver.sendPacket(packet);
-      }
+      Packet<?> packet = new ClientboundSetEntityDataPacketBuilder(glowingUser.getMinecraftPlayer())
+          .setFlagsFromEntity()
+          .build();
+      user.sendPacket(packet);
     }
   }
 
   @PacketHandler(type = ClientboundSetEntityDataPacket.class, modify = true)
   public Packet<?> onPacketPlayOut(Packet<?> packet, Player receiver) {
     if (!(packet instanceof ClientboundSetEntityDataPacket dataPacket)) {
+      return packet;
+    }
+
+    if (!ClientboundSetEntityDataPacketBuilder.isPosePacket(dataPacket)) {
       return packet;
     }
 
@@ -144,95 +193,26 @@ public abstract class SpectatorManager implements UserInventoryClickListener,
     }
 
     if (player == null) {
-      return packet;
+      return dataPacket;
     }
 
     if (!this.glowingUsers.contains(Server.getUser(player))) {
-      return packet;
+      return dataPacket;
     }
 
     SpectatorUser user = (SpectatorUser) Server.getUser(receiver);
 
-    if (!(user.hasGlowingEnabled())
-        || !(user.getStatus().equals(Status.User.OUT_GAME) || user.getStatus()
-        .equals(Status.User.SPECTATOR))) {
-      return packet;
+    if (!(user.hasGlowingEnabled()) || !(user.hasStatus(Status.User.OUT_GAME, Status.User.SPECTATOR))) {
+      return dataPacket;
     }
 
-    packet = new ClientboundSetEntityDataPacketBuilder(((CraftPlayer) player).getHandle())
-        .update()
+    dataPacket = new ClientboundSetEntityDataPacketBuilder(((CraftPlayer) player).getHandle())
+        .setDefaultFlags()
         .setFlags(ClientboundSetEntityDataPacketBuilder.getFlagsOfPacket(dataPacket))
         .setFlag(ClientboundSetEntityDataPacketBuilder.Type.GLOWING, true)
         .build();
 
-    return packet;
-  }
-
-  @Override
-  public void onUserInventoryInteract(UserInventoryInteractEvent e) {
-    ExItemStack clickedItem = e.getClickedItem();
-    SpectatorUser user = (SpectatorUser) e.getUser();
-
-    if (this.clickCooldownUsers.contains(user)) {
-      return;
-    }
-
-    this.clickCooldownUsers.add(user);
-    Server.runTaskLaterSynchrony(() -> this.clickCooldownUsers.remove(user), 10,
-        BasicBukkit.getPlugin());
-
-    if (clickedItem.equals(USER_INV)) {
-      user.openGameUserInventory();
-    } else if (clickedItem.equals(LEAVE_ITEM)) {
-
-      if (e.getAction().isRightClick()) {
-        if (!this.clickedLeaveUsers.containsKey(user)) {
-          this.clickedLeaveUsers.put(user, new ItemHoldClick(LEAVE_TIME));
-        } else {
-          if (this.clickedLeaveUsers.get(user).click()) {
-            user.sendActionBarText(Component.empty());
-            user.switchToLobbyLast();
-          } else {
-            user.sendActionBarText(Component.text("Leaving...", ExTextColor.WARNING));
-          }
-        }
-      }
-    } else if (clickedItem.equals(GLOWING)) {
-      user.setGlowingEnabled(!user.hasGlowingEnabled());
-      if (user.hasGlowingEnabled()) {
-        user.sendPluginMessage(Plugin.GAME,
-            Component.text("Enabled glowing", ExTextColor.PERSONAL));
-        clickedItem.enchant();
-      } else {
-        user.sendPluginMessage(Plugin.GAME,
-            Component.text("Disabled glowing", ExTextColor.PERSONAL));
-        clickedItem.disenchant();
-      }
-    } else if (clickedItem.equals(SPEED)) {
-      user.setSpeedEnabled(!user.hasSpeedEnabled());
-      if (user.hasSpeedEnabled()) {
-        user.sendPluginMessage(Plugin.GAME,
-            Component.text("Enabled speed", ExTextColor.PERSONAL));
-        clickedItem.enchant();
-      } else {
-        user.sendPluginMessage(Plugin.GAME,
-            Component.text("Disabled speed", ExTextColor.PERSONAL));
-        clickedItem.disenchant();
-      }
-    } else if (clickedItem.equals(FLYING)) {
-      user.setFlyEnabled(!user.hasFlyEnabled());
-      user.sendPluginMessage(Plugin.GAME,
-          Component.text((user.getAllowFlight() ? "Enabled" : "Disabled") + " flying",
-              ExTextColor.PERSONAL));
-      if (user.getAllowFlight()) {
-        clickedItem.enchant();
-      } else {
-        clickedItem.disenchant();
-      }
-    }
-
-    user.setItem(clickedItem);
-    user.updateInventory();
+    return dataPacket;
   }
 
   @Override

@@ -64,7 +64,7 @@ public class SpectatorUser extends TeamUser {
 
         if (this.glowingEnabled) {
           this.sendPacket(new ClientboundSetEntityDataPacketBuilder(user.getMinecraftPlayer())
-              .update()
+              .setFlagsFromEntity()
               .setFlag(ClientboundSetEntityDataPacketBuilder.Type.GLOWING, true)
               .build());
         }
@@ -151,7 +151,7 @@ public class SpectatorUser extends TeamUser {
 
     Server.getUsers(u -> u.hasStatus(Status.User.IN_GAME, Status.User.PRE_GAME, Status.User.ONLINE))
         .forEach(u -> this.sendPacket(new ClientboundSetEntityDataPacketBuilder(u.getMinecraftPlayer())
-            .update()
+            .setFlagsFromEntity()
             .setFlag(ClientboundSetEntityDataPacketBuilder.Type.GLOWING, this.glowingEnabled)
             .build()));
   }
