@@ -54,26 +54,17 @@ public class SpectatorUser extends TeamUser {
       this.setFlying(true);
     }, 10, BasicBukkit.getPlugin());
 
-    // show other spectators and hide for ingame users
+    // show other spectators and hide for in-game users
     for (User user : Server.getUsers()) {
-      if (Status.User.IN_GAME.equals(user.getStatus())
-          || Status.User.PRE_GAME.equals(user.getStatus())
-          || Status.User.ONLINE.equals(user.getStatus())) {
-
+      if (user.hasStatus(Status.User.IN_GAME, Status.User.PRE_GAME, Status.User.ONLINE)) {
         user.hideUser(this);
-
-        if (this.glowingEnabled) {
-          this.sendPacket(new ClientboundSetEntityDataPacketBuilder(user.getMinecraftPlayer())
-              .setFlagsFromEntity()
-              .setFlag(ClientboundSetEntityDataPacketBuilder.Type.GLOWING, true)
-              .build());
-        }
-
-      } else if (Status.User.OUT_GAME.equals(user.getStatus())
-          || Status.User.SPECTATOR.equals(user.getStatus())) {
+      } else if (user.hasStatus(Status.User.OUT_GAME, Status.User.SPECTATOR)) {
         user.showUser(this);
       }
+      this.showUser(user);
     }
+
+    GameServer.getSpectatorManager().sendGlowUpdateToUser(this);
 
     this.setGlowingEnabled(true);
     this.setSpeedEnabled(false);
