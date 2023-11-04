@@ -49,11 +49,20 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
   public static final Integer MAX_LOWER_THAN_MIN_HEIGHT = 10;
   private static final Integer LEAVE_TIME_MILLIS = 2000;
 
-  public static final ExItemStack USER_INV = new ExItemStack(1, Material.PLAYER_HEAD,
-      "§9Teleporter").setMoveable(false).setDropable(false).immutable()
+  public static final ExItemStack USER_INV = new ExItemStack(Material.PLAYER_HEAD)
+      .setDisplayName("§9Teleporter")
+      .setSlot(1)
+      .setMoveable(false)
+      .setDropable(false)
+      .immutable()
       .onInteract(event -> ((SpectatorUser) event.getUser()).openGameUserInventory(), true);
-  public static final ExItemStack GLOWING = new ExItemStack(2, Material.SPECTRAL_ARROW,
-      "§6Glowing").setMoveable(false).setDropable(false).immutable()
+
+  public static final ExItemStack GLOWING = new ExItemStack(Material.SPECTRAL_ARROW)
+      .setDisplayName("§6Glowing")
+      .setSlot(2)
+      .setMoveable(false)
+      .setDropable(false)
+      .immutable()
       .onInteract(event -> {
         SpectatorUser user = ((SpectatorUser) event.getUser());
         user.setGlowingEnabled(!user.hasGlowingEnabled());
@@ -69,30 +78,36 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
         GameServer.getSpectatorManager().sendGlowUpdateToUser(user);
         user.updateInventory();
       }, true, true);
-  public static final ExItemStack SPEED = new ExItemStack(3, Material.FEATHER, "§bSpeed")
-      .setMoveable(false).setDropable(false).immutable()
+
+  public static final ExItemStack SPEED = new ExItemStack(Material.FEATHER)
+      .setDisplayName("§bSpeed")
+      .setSlot(3)
+      .setMoveable(false)
+      .setDropable(false)
+      .immutable()
       .onInteract(event -> {
         SpectatorUser user = ((SpectatorUser) event.getUser());
         user.setSpeedEnabled(!user.hasSpeedEnabled());
         if (user.hasSpeedEnabled()) {
-          user.sendPluginMessage(Plugin.GAME,
-              Component.text("Enabled speed", ExTextColor.PERSONAL));
+          user.sendPluginTDMessage(Plugin.GAME, "§sEnabled speed");
           event.getClickedItem().enchant();
         } else {
-          user.sendPluginMessage(Plugin.GAME,
-              Component.text("Disabled speed", ExTextColor.PERSONAL));
+          user.sendPluginTDMessage(Plugin.GAME, "§sDisabled speed");
           event.getClickedItem().disenchant();
         }
         user.updateInventory();
       }, true, true);
-  public static final ExItemStack FLYING = new ExItemStack(4, Material.RABBIT_FOOT, "§9Flying")
-      .setMoveable(false).setDropable(false).immutable()
+
+  public static final ExItemStack FLYING = new ExItemStack(Material.RABBIT_FOOT)
+      .setDisplayName("§9Flying")
+      .setSlot(4)
+      .setMoveable(false)
+      .setDropable(false)
+      .immutable()
       .onInteract(event -> {
         SpectatorUser user = ((SpectatorUser) event.getUser());
         user.setFlyEnabled(!user.hasFlyEnabled());
-        user.sendPluginMessage(Plugin.GAME,
-            Component.text((user.getAllowFlight() ? "Enabled" : "Disabled") + " flying",
-                ExTextColor.PERSONAL));
+        user.sendPluginTDMessage(Plugin.GAME, "§s" + (user.getAllowFlight() ? "Enabled" : "Disabled") + " flying");
         if (user.getAllowFlight()) {
           event.getClickedItem().enchant();
         } else {
@@ -100,6 +115,7 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
         }
         user.updateInventory();
       }, true, true);
+
   public static final ExItemStack LEAVE_ITEM = new ExItemStack(8, Material.ANVIL,
       "§6Leave (hold right)").setMoveable(false).setDropable(false).immutable()
       .onInteract(event -> {
