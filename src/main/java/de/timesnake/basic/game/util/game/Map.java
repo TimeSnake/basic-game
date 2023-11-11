@@ -13,13 +13,10 @@ import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.database.util.game.DbMap;
 import de.timesnake.database.util.object.DbLocation;
 import de.timesnake.library.basic.util.Loggers;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.bukkit.Material;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Map {
 
@@ -27,6 +24,7 @@ public class Map {
   protected final String displayName;
   protected final Integer minPlayers;
   protected final Integer maxPlayers;
+  protected final List<Integer> teamAmounts;
   protected final ExItemStack item;
   protected final List<String> description;
   protected final List<String> info;
@@ -46,6 +44,7 @@ public class Map {
     this.displayName = map.getDisplayName();
     this.minPlayers = map.getMinPlayers();
     this.maxPlayers = map.getMaxPlayers();
+    this.teamAmounts = map.getTeamAmounts();
 
     String materialName = map.getItemName();
     if (materialName != null) {
@@ -82,6 +81,7 @@ public class Map {
     this.world = world;
     this.minPlayers = null;
     this.maxPlayers = null;
+    this.teamAmounts = null;
     this.description = null;
     this.info = null;
     this.authors = null;
@@ -124,6 +124,10 @@ public class Map {
 
   public Integer getMaxPlayers() {
     return this.maxPlayers;
+  }
+
+  public List<Integer> getTeamAmounts() {
+    return teamAmounts;
   }
 
   public ExLocation getLocation(int number) {
@@ -293,7 +297,7 @@ public class Map {
 
     while (author.hasNext()) {
       String part = author.next();
-      if (authors.size() > 0) {
+      if (!authors.isEmpty()) {
         if (authors.getLast().length() + part.length() + ", ".length() <= length) {
           String entry = authors.getLast();
           if (author.hasNext()) {

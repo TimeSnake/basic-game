@@ -13,13 +13,9 @@ import de.timesnake.database.util.object.Type;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.statistics.StatType;
 import de.timesnake.library.game.GameInfo;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
+import java.util.function.Predicate;
 
 public class Game<Info extends GameInfo> {
 
@@ -77,9 +73,7 @@ public class Game<Info extends GameInfo> {
           if (map != null) {
             this.maps.put(map.getName(), map);
             if (loadWorlds && map.getWorld() != null) {
-              Loggers.MAPS.info(
-                  "Loaded map " + map.getName() + " (world: " + map.getWorld()
-                      .getName() + ")");
+              Loggers.MAPS.info("Loaded map " + map.getName() + " (world: " + map.getWorld().getName() + ")");
             } else {
               Loggers.MAPS.info("Loaded map " + map.getName());
             }
@@ -120,6 +114,10 @@ public class Game<Info extends GameInfo> {
 
   public Collection<? extends Map> getMaps() {
     return this.maps.values();
+  }
+
+  public Collection<? extends Map> getMaps(Predicate<Map> filter) {
+    return this.maps.values().stream().filter(filter).toList();
   }
 
   public Map getMap(String mapName) {

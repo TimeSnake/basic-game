@@ -204,6 +204,8 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
       return packet;
     }
 
+    System.out.println("packet");
+
     int entityId = dataPacket.id();
 
     Player player = null;
@@ -217,6 +219,10 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
     if (player == null) {
       return dataPacket;
     }
+
+    System.out.println(player.getName());
+    System.out.println("packet " + ClientboundSetEntityDataPacketBuilder.getFlagOfPacket(dataPacket,
+        ClientboundSetEntityDataPacketBuilder.Type.SLEEPING));
 
     if (!this.glowingUsers.contains(Server.getUser(player))) {
       return dataPacket;
