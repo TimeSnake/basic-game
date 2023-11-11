@@ -13,7 +13,6 @@ import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.game.util.game.TmpGame;
 import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.library.basic.util.Status;
-import de.timesnake.library.packets.core.packet.out.entity.ClientboundSetEntityDataPacketBuilder;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -139,12 +138,7 @@ public class SpectatorUser extends TeamUser {
 
   public void setGlowingEnabled(boolean glowingEnabled) {
     this.glowingEnabled = glowingEnabled;
-
-    Server.getUsers(u -> u.hasStatus(Status.User.IN_GAME, Status.User.PRE_GAME, Status.User.ONLINE))
-        .forEach(u -> this.sendPacket(new ClientboundSetEntityDataPacketBuilder(u.getMinecraftPlayer())
-            .setFlagsFromEntity()
-            .setFlag(ClientboundSetEntityDataPacketBuilder.Type.GLOWING, this.glowingEnabled)
-            .build()));
+    GameServer.getSpectatorManager().sendGlowUpdateToUser(this);
   }
 
   public void setSpeedEnabled(boolean speedEnabled) {

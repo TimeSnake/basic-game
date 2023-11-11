@@ -75,7 +75,6 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
               Component.text("Disabled glowing", ExTextColor.PERSONAL));
           event.getClickedItem().disenchant();
         }
-        GameServer.getSpectatorManager().sendGlowUpdateToUser(user);
         user.updateInventory();
       }, true, true);
 
@@ -163,7 +162,8 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
     this.userHeadsById.clear();
     int slot = 0;
     for (User user : Server.getInGameUsers()) {
-      ExItemStack head = ExItemStack.getHead(user.getPlayer(), user.getTDChatName()).setLore("", "§7Click to " + "teleport");
+      ExItemStack head = ExItemStack.getHead(user.getPlayer(), user.getTDChatName())
+          .setLore("", "§7Click to teleport");
       this.userHeadsById.put(head.getId(), user);
       this.gameUserInv.setItemStack(slot, head);
       Server.getInventoryEventManager().addClickListener(this, head);
@@ -188,7 +188,8 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
     for (User glowingUser : this.glowingUsers) {
       Packet<?> packet = new ClientboundSetEntityDataPacketBuilder(glowingUser.getMinecraftPlayer())
           .setFlagsFromEntity()
-          .setFlag(ClientboundSetEntityDataPacketBuilder.Type.GLOWING, true)
+          .setFlag(ClientboundSetEntityDataPacketBuilder.SharedFlags.GLOWING,
+              ((SpectatorUser) user).hasGlowingEnabled())
           .build();
       user.sendPacket(packet);
     }
@@ -200,11 +201,9 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
       return packet;
     }
 
-    if (!ClientboundSetEntityDataPacketBuilder.isPosePacket(dataPacket)) {
+    if (!ClientboundSetEntityDataPacketBuilder.isSharedFlagsPacket(dataPacket)) {
       return packet;
     }
-
-    System.out.println("packet");
 
     int entityId = dataPacket.id();
 
@@ -220,10 +219,6 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
       return dataPacket;
     }
 
-    System.out.println(player.getName());
-    System.out.println("packet " + ClientboundSetEntityDataPacketBuilder.getFlagOfPacket(dataPacket,
-        ClientboundSetEntityDataPacketBuilder.Type.SLEEPING));
-
     if (!this.glowingUsers.contains(Server.getUser(player))) {
       return dataPacket;
     }
@@ -234,10 +229,8 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
       return dataPacket;
     }
 
-    dataPacket = new ClientboundSetEntityDataPacketBuilder(((CraftPlayer) player).getHandle())
-        .setDefaultFlags()
-        .setFlags(ClientboundSetEntityDataPacketBuilder.getFlagsOfPacket(dataPacket))
-        .setFlag(ClientboundSetEntityDataPacketBuilder.Type.GLOWING, true)
+    dataPacket = new ClientboundSetEntityDataPacketBuilder(((CraftPlayer) player).getHandle(), dataPacket)
+        .setFlag(ClientboundSetEntityDataPacketBuilder.SharedFlags.GLOWING, true)
         .build();
 
     return dataPacket;
