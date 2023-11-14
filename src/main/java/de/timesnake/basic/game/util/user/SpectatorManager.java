@@ -225,7 +225,7 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
 
     SpectatorUser user = (SpectatorUser) Server.getUser(receiver);
 
-    if (!(user.hasGlowingEnabled()) || !(user.hasStatus(Status.User.OUT_GAME, Status.User.SPECTATOR))) {
+    if (!user.hasGlowingEnabled()) {
       return dataPacket;
     }
 
