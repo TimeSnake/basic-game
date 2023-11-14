@@ -129,7 +129,7 @@ public class SpectatorUser extends TeamUser {
   }
 
   public boolean hasGlowingEnabled() {
-    return glowingEnabled;
+    return glowingEnabled && this.hasStatus(Status.User.OUT_GAME, Status.User.SPECTATOR);
   }
 
   public boolean hasSpeedEnabled() {
