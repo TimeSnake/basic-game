@@ -9,11 +9,16 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
 import de.timesnake.basic.game.util.game.Game;
 import de.timesnake.basic.game.util.user.SpectatorManager;
+import org.bukkit.Sound;
 
 public class GameServer extends Server {
 
   public static final String DISCORD_SPECTATOR = "Spectator";
   public static final String DISCORD_LOUNGE = "Lounge";
+
+  public static final Sound KILL_SOUND = Sound.ENTITY_PLAYER_LEVELUP;
+
+  public static final Sound END_SOUND = Sound.BLOCK_BEACON_ACTIVATE;
 
   public static Game<?> getGame() {
     return server.getGame();
