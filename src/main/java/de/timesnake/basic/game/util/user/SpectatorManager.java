@@ -24,6 +24,7 @@ import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.player.UserMap;
+import de.timesnake.library.extension.util.player.UserSet;
 import de.timesnake.library.packets.core.packet.out.entity.ClientboundSetEntityDataPacketBuilder;
 import de.timesnake.library.packets.util.listener.PacketHandler;
 import de.timesnake.library.packets.util.listener.PacketPlayOutListener;
@@ -137,7 +138,7 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
   private final UserMap<User, ItemHoldClick> clickedLeaveUsers = new UserMap<>();
   private final HashMap<Integer, User> userHeadsById = new HashMap<>();
   private ExInventory gameUserInv;
-  private Set<User> glowingUsers = new HashSet<>();
+  private Set<User> glowingUsers = new UserSet<>();
 
   public SpectatorManager() {
     this.gameUserInv = new ExInventory(9, Component.text("Players"));
@@ -162,8 +163,7 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
     this.userHeadsById.clear();
     int slot = 0;
     for (User user : Server.getInGameUsers()) {
-      ExItemStack head = ExItemStack.getHead(user.getPlayer(), user.getTDChatName())
-          .setLore("", "§7Click to teleport");
+      ExItemStack head = ExItemStack.getHead(user.getPlayer(), user.getTDChatName()).setLore("", "§7Click to teleport");
       this.userHeadsById.put(head.getId(), user);
       this.gameUserInv.setItemStack(slot, head);
       Server.getInventoryEventManager().addClickListener(this, head);

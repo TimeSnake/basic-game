@@ -156,6 +156,10 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
     return this.textColor;
   }
 
+  public String getTDColor() {
+    return "§" + this.textColor.getToken();
+  }
+
   @Override
   public ChatColor getTablistPrefixChatColor() {
     return this.chatColor;
@@ -258,8 +262,7 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
 
 
   @Override
-  public NameTagVisibility isNameTagVisibleBy(TablistablePlayer player,
-                                              TablistableGroup otherGroup) {
+  public NameTagVisibility isNameTagVisibleBy(TablistablePlayer player, TablistableGroup otherGroup) {
     return NameTagVisibility.ALWAYS;
   }
 
