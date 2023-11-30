@@ -87,9 +87,7 @@ public class SpectatorUser extends TeamUser {
       }
     }
 
-    if (this.getTeam() == null) {
-      this.teleportToSpectatorSpawn();
-    }
+    this.teleportToSpectatorSpawn();
 
     this.resetSideboard();
     this.setSideboard(GameServer.getSpectatorManager().getSpectatorSideboard());
