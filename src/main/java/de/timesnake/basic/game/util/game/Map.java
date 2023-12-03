@@ -13,6 +13,7 @@ import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.database.util.game.DbMap;
 import de.timesnake.database.util.object.DbLocation;
 import de.timesnake.library.basic.util.Loggers;
+import org.bukkit.GameRule;
 import org.bukkit.Material;
 
 import java.util.*;
@@ -90,24 +91,30 @@ public class Map {
 
   private void loadWorld() {
     this.world = Server.getWorld(this.worldName);
+
     if (this.world == null) {
-      Loggers.MAPS.warning("Map-World " + this.worldName + " of map " + this.name +
-          " could not loaded, world not exists");
-    } else {
-      for (java.util.Map.Entry<Integer, DbLocation> entry : this.getDatabase()
-          .getMapLocations().entrySet()) {
-
-        try {
-          this.locationsById.put(entry.getKey(),
-              Server.getExLocationFromDbLocation(entry.getValue()));
-        } catch (WorldNotExistException var4) {
-          Loggers.MAPS.warning("Map " + this.worldName + " can not load location " +
-              entry.getKey());
-        }
-      }
-
-      Loggers.MAPS.info("Loaded locations of map " + this.name);
+      Loggers.MAPS.warning("Map-World " + this.worldName + " of map " + this.name + " could not loaded, world not " +
+          "exists");
+      return;
     }
+
+    for (java.util.Map.Entry<Integer, DbLocation> entry : this.getDatabase().getMapLocations().entrySet()) {
+      try {
+        this.locationsById.put(entry.getKey(), Server.getExLocationFromDbLocation(entry.getValue()));
+      } catch (WorldNotExistException e) {
+        Loggers.MAPS.warning("Map " + this.worldName + " can not load location " + entry.getKey() + ": " + e.getMessage());
+      }
+    }
+
+    this.loadWorldSettings();
+
+    Loggers.MAPS.info("Loaded locations of map " + this.name);
+  }
+
+  protected void loadWorldSettings() {
+    this.world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+    this.world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+    this.world.setAutoSave(false);
   }
 
   public String getName() {
