@@ -79,14 +79,8 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
     if (String.valueOf(this.rank).length() > RANK_LENGTH) {
       throw new UnsupportedGroupRankException(this.name, this.rank);
     } else {
-      StringBuilder sb = new StringBuilder();
-
-      sb.append("0".repeat(Math.max(0, RANK_LENGTH - String.valueOf(this.rank).length())));
-
-      this.tablistRank = sb.append(this.rank).toString();
-      Loggers.TEAMS.info("Loaded team " + this.name + ": " + this.displayName + "; "
-          + this.textColor.asHexString() + "; " + this.color.toString() + "; "
-          + this.tablistRank + "; " + this.ratio);
+      this.tablistRank = "0".repeat(Math.max(0, RANK_LENGTH - String.valueOf(this.rank).length())) + this.rank;
+      Loggers.TEAMS.info("Loaded team " + this.getName() + ": " + this);
     }
   }
 
@@ -110,14 +104,8 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
       throw new UnsupportedGroupRankException(this.name, this.rank);
     }
 
-    StringBuilder sb = new StringBuilder();
-
-    sb.append("0".repeat(Math.max(0, 6 - String.valueOf(this.rank).length())));
-
-    this.tablistRank = sb.append(this.rank).toString();
-    Loggers.TEAMS.info("Loaded team " + this.name + ": " + this.displayName + "; "
-        + this.textColor + "; " + this.color.toString() + "; "
-        + this.tablistRank + "; " + this.ratio);
+    this.tablistRank = "0".repeat(Math.max(0, 6 - String.valueOf(this.rank).length())) + this.rank;
+    Loggers.TEAMS.info("Loaded team " + this.getName() + ": " + this);
   }
 
   public String getName() {
@@ -260,7 +248,6 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
     return database;
   }
 
-
   @Override
   public NameTagVisibility isNameTagVisibleBy(TablistablePlayer player, TablistableGroup otherGroup) {
     return NameTagVisibility.ALWAYS;
@@ -269,5 +256,19 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
   @Override
   public NameTagVisibility isNameTagVisible(TablistablePlayer player) {
     return NameTagVisibility.ALWAYS;
+  }
+
+  @Override
+  public String toString() {
+    return "Team{" +
+        "name='" + name + '\'' +
+        ", rank=" + rank +
+        ", displayName='" + displayName + '\'' +
+        ", textColor=" + textColor +
+        ", color=" + color +
+        ", ratio=" + ratio +
+        ", privateChat=" + privateChat +
+        ", minSize=" + minSize +
+        '}';
   }
 }
