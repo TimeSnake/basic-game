@@ -187,7 +187,7 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
   private void sendUpdatePackets(User user) {
     for (User glowingUser : this.glowingUsers) {
       Packet<?> packet = new ClientboundSetEntityDataPacketBuilder(glowingUser.getMinecraftPlayer())
-          .setFlagsFromEntity()
+          .setAllFromEntity()
           .setFlag(ClientboundSetEntityDataPacketBuilder.SharedFlags.GLOWING,
               ((SpectatorUser) user).hasGlowingEnabled())
           .build();

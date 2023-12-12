@@ -149,7 +149,7 @@ public class Map {
     int number = this.locationsById.size() + 1;
     if (location.getExWorld().equals(this.world)) {
       this.locationsById.put(number, location);
-      this.dbMap.addLocation(number, Server.getDbLocationFromLocation(location));
+      this.dbMap.setLocation(number, Server.getDbLocationFromLocation(location));
       return number;
     } else {
       throw new LocationNotInWorldException(location);
@@ -161,11 +161,11 @@ public class Map {
       if (this.locationsById.containsKey(number)) {
         this.locationsById.put(number, location);
         this.dbMap.deleteLocation(number);
-        this.dbMap.addLocation(number, Server.getDbLocationFromLocation(location));
+        this.dbMap.setLocation(number, Server.getDbLocationFromLocation(location));
         return true;
       } else {
         this.locationsById.put(number, location);
-        this.dbMap.addLocation(number, Server.getDbLocationFromLocation(location));
+        this.dbMap.setLocation(number, Server.getDbLocationFromLocation(location));
         return false;
       }
     } else {
