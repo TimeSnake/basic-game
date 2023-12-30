@@ -7,16 +7,13 @@ package de.timesnake.basic.game.util.game;
 import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
 import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.database.util.game.DbTmpGame;
-import de.timesnake.database.util.object.Type;
+import de.timesnake.library.basic.util.Availability;
+import de.timesnake.library.basic.util.DiscordChannelType;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.game.TmpGameInfo;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeSet;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.*;
 
 public class TmpGame extends Game<TmpGameInfo> {
 
@@ -80,7 +77,7 @@ public class TmpGame extends Game<TmpGameInfo> {
     return getInfo().getTeamSizes();
   }
 
-  public Type.Availability getTeamMerge() {
+  public Availability getTeamMerge() {
     return getInfo().getTeamMerge();
   }
 
@@ -96,7 +93,7 @@ public class TmpGame extends Game<TmpGameInfo> {
     return getInfo().hideTeams();
   }
 
-  public Type.Discord getDiscordType() {
+  public DiscordChannelType getDiscordType() {
     return getInfo().getDiscordType();
   }
 
@@ -132,11 +129,11 @@ public class TmpGame extends Game<TmpGameInfo> {
     return getInfo().isEnabled();
   }
 
-  public Type.Availability getMapAvailability() {
+  public Availability getMapAvailability() {
     return getInfo().getMapAvailability();
   }
 
-  public Type.Availability getKitAvailability() {
+  public Availability getKitAvailability() {
     return getInfo().getKitAvailability();
   }
 

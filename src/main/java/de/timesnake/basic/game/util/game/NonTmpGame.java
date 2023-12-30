@@ -5,7 +5,7 @@
 package de.timesnake.basic.game.util.game;
 
 import de.timesnake.database.util.game.DbNonTmpGame;
-import de.timesnake.database.util.object.Type;
+import de.timesnake.library.basic.util.Availability;
 import de.timesnake.library.game.NonTmpGameInfo;
 import org.bukkit.inventory.ItemStack;
 
@@ -55,11 +55,11 @@ public class NonTmpGame extends Game<NonTmpGameInfo> {
     return getInfo().isEnabled();
   }
 
-  public Type.Availability getMapAvailability() {
+  public Availability getMapAvailability() {
     return getInfo().getMapAvailability();
   }
 
-  public Type.Availability getKitAvailability() {
+  public Availability getKitAvailability() {
     return getInfo().getKitAvailability();
   }
 

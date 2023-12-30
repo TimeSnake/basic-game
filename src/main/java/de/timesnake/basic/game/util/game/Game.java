@@ -9,7 +9,7 @@ import de.timesnake.database.util.game.DbGame;
 import de.timesnake.database.util.game.DbKit;
 import de.timesnake.database.util.game.DbMap;
 import de.timesnake.database.util.game.DbTeam;
-import de.timesnake.database.util.object.Type;
+import de.timesnake.library.basic.util.Availability;
 import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.statistics.StatType;
 import de.timesnake.library.game.GameInfo;
@@ -36,8 +36,8 @@ public class Game<Info extends GameInfo> {
 
     this.kits = new LinkedList<>();
 
-    if (this.info.getKitAvailability().equals(Type.Availability.ALLOWED)
-        || this.info.getKitAvailability().equals(Type.Availability.REQUIRED)) {
+    if (this.info.getKitAvailability().equals(Availability.ALLOWED)
+        || this.info.getKitAvailability().equals(Availability.REQUIRED)) {
       this.loadKits(database);
     }
 
@@ -47,8 +47,7 @@ public class Game<Info extends GameInfo> {
       Integer displayIndex = stat.getDisplayIndex();
       Integer lineIndex = stat.getDisplayLineIndex();
 
-      this.statByLineByDisplay.computeIfAbsent(displayIndex, (i) -> new HashMap<>())
-          .put(lineIndex, stat);
+      this.statByLineByDisplay.computeIfAbsent(displayIndex, (i) -> new HashMap<>()).put(lineIndex, stat);
 
       Integer globalDisplayIndex = stat.getGlobalDisplayIndex();
       Integer globalLineIndex = stat.getGlobalDisplayLineIndex();
@@ -62,8 +61,8 @@ public class Game<Info extends GameInfo> {
   }
 
   public final void loadMaps(boolean loadWorlds) {
-    if (this.info.getMapAvailability().equals(Type.Availability.REQUIRED)
-        || this.info.getMapAvailability().equals(Type.Availability.ALLOWED)) {
+    if (this.info.getMapAvailability().equals(Availability.REQUIRED)
+        || this.info.getMapAvailability().equals(Availability.ALLOWED)) {
 
       this.maps.clear();
 
