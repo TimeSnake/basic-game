@@ -17,6 +17,7 @@ import org.bukkit.GameRule;
 import org.bukkit.Material;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class Map {
@@ -28,7 +29,7 @@ public class Map {
   protected final List<Integer> teamAmounts;
   protected final ExItemStack item;
   protected final List<String> description;
-  protected final List<String> info;
+  protected final java.util.Map<String, String> properties;
   protected final DbMap dbMap;
   protected final String worldName;
   protected final java.util.Map<Integer, ExLocation> locationsById = new HashMap<>();
@@ -63,8 +64,8 @@ public class Map {
       this.item = new ExItemStack(Material.BARRIER);
     }
 
+    this.properties = map.getProperties();
     this.description = map.getDescription();
-    this.info = map.getInfo();
     this.worldName = map.getWorldName();
     this.authors = map.getAuthorNames();
 
@@ -84,7 +85,7 @@ public class Map {
     this.maxPlayers = null;
     this.teamAmounts = null;
     this.description = null;
-    this.info = null;
+    this.properties = null;
     this.authors = null;
     this.dbMap = null;
   }
@@ -287,8 +288,58 @@ public class Map {
     return this.description;
   }
 
-  public List<String> getInfo() {
-    return this.info;
+  public java.util.Map<String, String> getProperties() {
+    return properties;
+  }
+
+  public String getProperty(String key) {
+    return this.properties.get(key);
+  }
+
+  public void setProperty(String key, String value) {
+    this.properties.put(key, value);
+    this.getDatabase().setProperty(key, value);
+  }
+
+  public <T> T getProperty(String key, Class<T> clazz, T defaultValue) {
+    return this.getProperty(key, clazz, defaultValue, v -> {
+    });
+  }
+
+  public <T> T getProperty(String key, Class<T> clazz, T defaultValue, Consumer<String> onError) {
+    String value = this.getProperty(key);
+
+    if (value == null) {
+      return defaultValue;
+    }
+
+    if (clazz.equals(String.class)) {
+      return (T) value;
+    } else if (clazz.equals(Integer.class)) {
+      try {
+        return (T) Integer.valueOf(value);
+      } catch (NumberFormatException e) {
+        onError.accept(value);
+        return defaultValue;
+      }
+    } else if (clazz.equals(Float.class)) {
+      try {
+        return (T) Float.valueOf(value);
+      } catch (NumberFormatException e) {
+        onError.accept(value);
+        return defaultValue;
+      }
+    } else if (clazz.equals(UUID.class)) {
+      try {
+        return (T) UUID.fromString(value);
+      } catch (IllegalArgumentException e) {
+        onError.accept(value);
+        return defaultValue;
+      }
+    }
+
+    onError.accept(value);
+    return defaultValue;
   }
 
   public List<String> getAuthors() {
