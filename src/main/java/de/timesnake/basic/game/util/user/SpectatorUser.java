@@ -197,14 +197,16 @@ public class SpectatorUser extends TeamUser {
   }
 
   public void hideSpectators() {
-    for (User user : Server.getUsers()) {
-      user.showUser(this);
+    Server.runTaskSynchrony(() -> {
+      for (User user : Server.getUsers()) {
+        user.showUser(this);
 
-      if (user.getStatus().equals(Status.User.OUT_GAME)
-          || user.getStatus().equals(Status.User.SPECTATOR)) {
-        this.hideUser(user);
+        if (user.getStatus().equals(Status.User.OUT_GAME)
+            || user.getStatus().equals(Status.User.SPECTATOR)) {
+          this.hideUser(user);
+        }
       }
-    }
+    }, BasicBukkit.getPlugin());
   }
 
   public void setRejoinInventory() {
