@@ -9,29 +9,32 @@ import de.timesnake.basic.bukkit.util.user.inventory.UserInventoryClickListener;
 import de.timesnake.database.util.game.DbKit;
 import de.timesnake.library.basic.util.BuilderBasis;
 import de.timesnake.library.basic.util.BuilderNotFullyInstantiatedException;
-import de.timesnake.library.basic.util.Loggers;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bukkit.Material;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.bukkit.Material;
 
 public class Kit {
 
-  public static final Kit RANDOM = new Builder()
+  public static final Kit RANDOM = new Builder<>()
       .id(0)
       .name("Random")
       .material(Material.GRAY_WOOL)
       .addDescription("§7Click to get a random kit")
       .build();
 
+  private final Logger logger = LogManager.getLogger("kit");
 
   private final int id;
   private final String name;
   private final List<String> description = new ArrayList<>();
   private Material material;
 
-  public Kit(Builder builder) {
+  public Kit(Builder<?> builder) {
     this.id = builder.id;
     this.name = "§5" + builder.name;
     this.material = builder.material;
@@ -55,7 +58,7 @@ public class Kit {
     try {
       this.material = Material.getMaterial(materialName);
     } catch (IllegalArgumentException var4) {
-      Loggers.KITS.warning("Error while loading item for kit " + this.getName());
+      this.logger.warn("Error while loading item for kit " + this.getName());
     }
 
   }
@@ -84,33 +87,33 @@ public class Kit {
         .onClick(listener);
   }
 
-  public static class Builder implements BuilderBasis {
+  public static class Builder<B extends Builder<B>> implements BuilderBasis {
 
     private int id;
     private String name;
-    private LinkedList<String> description = new LinkedList<>();
+    private final LinkedList<String> description = new LinkedList<>();
     private Material material;
 
-    public Builder id(int id) {
+    public B id(int id) {
       this.id = id;
-      return this;
+      return (B) this;
     }
 
-    public Builder name(String name) {
+    public B name(String name) {
       this.name = name;
-      return this;
+      return (B) this;
     }
 
-    public Builder addDescription(String... lines) {
+    public B addDescription(String... lines) {
       for (String line : lines) {
         this.description.addLast(line);
       }
-      return this;
+      return (B) this;
     }
 
-    public Builder material(Material material) {
+    public B material(Material material) {
       this.material = material;
-      return this;
+      return (B) this;
     }
 
     @Override
