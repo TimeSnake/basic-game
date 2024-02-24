@@ -10,14 +10,17 @@ import de.timesnake.database.util.game.DbKit;
 import de.timesnake.database.util.game.DbMap;
 import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.library.basic.util.Availability;
-import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.statistics.StatType;
 import de.timesnake.library.game.GameInfo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.function.Predicate;
 
 public class Game<Info extends GameInfo> {
+
+  protected final Logger logger = LogManager.getLogger("game");
 
   protected final DbGame database;
 
@@ -72,13 +75,13 @@ public class Game<Info extends GameInfo> {
           if (map != null) {
             this.maps.put(map.getName(), map);
             if (loadWorlds && map.getWorld() != null) {
-              Loggers.MAPS.info("Loaded map " + map.getName() + " (world: " + map.getWorld().getName() + ")");
+              this.logger.info("Loaded map '{}' (world: '{}')", map.getName(), map.getWorld().getName());
             } else {
-              Loggers.MAPS.info("Loaded map " + map.getName());
+              this.logger.info("Loaded map {}", map.getName());
             }
           }
         } else {
-          Loggers.MAPS.info("NOT loaded map " + dbMap.getName() + " (disabled)");
+          this.logger.info("NOT loaded map {} (disabled)", dbMap.getName());
         }
       }
     }

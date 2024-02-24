@@ -8,9 +8,10 @@ import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
 import de.timesnake.basic.bukkit.util.user.scoreboard.*;
 import de.timesnake.basic.game.util.user.TeamUser;
 import de.timesnake.database.util.game.DbTeam;
-import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.basic.util.Status;
 import de.timesnake.library.chat.ExTextColor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 
@@ -47,6 +48,8 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
     return TablistGroupType.GAME_TEAM;
   }
 
+  protected final Logger logger = LogManager.getLogger("team");
+
   private final DbTeam database;
   private final String name;
   private final Integer rank;
@@ -80,7 +83,7 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
       throw new UnsupportedGroupRankException(this.name, this.rank);
     } else {
       this.tablistRank = "0".repeat(Math.max(0, RANK_LENGTH - String.valueOf(this.rank).length())) + this.rank;
-      Loggers.TEAMS.info("Loaded team " + this.getName() + ": " + this);
+      this.logger.info("Loaded team '{}': {}", this.name, this);
     }
   }
 
@@ -105,7 +108,7 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
     }
 
     this.tablistRank = "0".repeat(Math.max(0, 6 - String.valueOf(this.rank).length())) + this.rank;
-    Loggers.TEAMS.info("Loaded team " + this.getName() + ": " + this);
+    this.logger.info("Loaded team '{}': {}", this.name, this);
   }
 
   public String getName() {

@@ -17,7 +17,6 @@ import de.timesnake.database.core.game.DbNonTmpGame;
 import de.timesnake.database.core.game.DbTmpGame;
 import de.timesnake.database.util.Database;
 import de.timesnake.database.util.game.DbGame;
-import de.timesnake.library.basic.util.Loggers;
 import org.bukkit.entity.Player;
 
 public abstract class GameServerManager<Game extends de.timesnake.basic.game.util.game.Game<?>> extends
@@ -37,7 +36,7 @@ public abstract class GameServerManager<Game extends de.timesnake.basic.game.uti
     if (dbGame != null && dbGame.exists()) {
       this.game = this.loadGame(dbGame, false);
     } else {
-      Loggers.SYSTEM.warning("Could not load game");
+      this.logger.warn("Could not load game");
     }
 
     this.spectatorManager = this.initSpectatorManager();
@@ -67,7 +66,7 @@ public abstract class GameServerManager<Game extends de.timesnake.basic.game.uti
   public final DbGame getDbGame() {
     String task = Server.getTask();
     if (task == null) {
-      Loggers.SYSTEM.warning("Task is null");
+      this.logger.warn("Task is null");
       return null;
     } else {
       return Database.getGames().getGame(task);

@@ -12,7 +12,8 @@ import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.database.util.game.DbMap;
 import de.timesnake.database.util.object.DbLocation;
-import de.timesnake.library.basic.util.Loggers;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.GameRule;
 import org.bukkit.Material;
 
@@ -21,6 +22,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class Map {
+
+  protected final Logger logger = LogManager.getLogger("map");
 
   protected final String name;
   protected final String displayName;
@@ -56,7 +59,7 @@ public class Map {
       try {
         item = new ExItemStack(Material.getMaterial(materialName));
       } catch (IllegalArgumentException var6) {
-        Loggers.MAPS.warning("Can not load item for map " + this.getName());
+        this.logger.warn("Can not load item for map {}", this.getName());
         item = new ExItemStack(new ExItemStack(Material.MAP));
       }
       this.item = item;
@@ -94,8 +97,7 @@ public class Map {
     this.world = Server.getWorld(this.worldName);
 
     if (this.world == null) {
-      Loggers.MAPS.warning("Map-World " + this.worldName + " of map " + this.name + " could not loaded, world not " +
-          "exists");
+      this.logger.warn("World '{}' of map '{}' could not loaded, world not exists", this.worldName, this.name);
       return;
     }
 
@@ -103,13 +105,13 @@ public class Map {
       try {
         this.locationsById.put(entry.getKey(), Server.getExLocationFromDbLocation(entry.getValue()));
       } catch (WorldNotExistException e) {
-        Loggers.MAPS.warning("Map " + this.worldName + " can not load location " + entry.getKey() + ": " + e.getMessage());
+        this.logger.warn("Map '{}' can not load location '{}': {}", this.worldName, entry.getKey(), e.getMessage());
       }
     }
 
     this.loadWorldSettings();
 
-    Loggers.MAPS.info("Loaded locations of map " + this.name);
+    this.logger.info("Loaded locations of map '{}'", this.name);
   }
 
   protected void loadWorldSettings() {

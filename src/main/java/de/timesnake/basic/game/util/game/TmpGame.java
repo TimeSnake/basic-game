@@ -9,7 +9,6 @@ import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.database.util.game.DbTmpGame;
 import de.timesnake.library.basic.util.Availability;
 import de.timesnake.library.basic.util.DiscordChannelType;
-import de.timesnake.library.basic.util.Loggers;
 import de.timesnake.library.game.TmpGameInfo;
 import org.bukkit.inventory.ItemStack;
 
@@ -29,7 +28,7 @@ public class TmpGame extends Game<TmpGameInfo> {
       try {
         team = this.loadTeam(dbTeam);
       } catch (UnsupportedGroupRankException e) {
-        Loggers.GROUPS.warning(e.getMessage());
+        this.logger.warn("Unsupported rank for team '{}': {}", dbTeam.getName(), e.getMessage());
         continue;
       }
 
