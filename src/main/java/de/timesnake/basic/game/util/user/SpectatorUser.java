@@ -36,7 +36,7 @@ public class SpectatorUser extends TeamUser {
   }
 
   public void joinSpectator() {
-    if (!this.getStatus().equals(Status.User.SPECTATOR)) {
+    if (!this.hasStatus(Status.User.SPECTATOR)) {
       this.setStatus(Status.User.OUT_GAME);
     }
 
@@ -53,7 +53,14 @@ public class SpectatorUser extends TeamUser {
       this.setFlying(true);
     }, 10, BasicBukkit.getPlugin());
 
-    // show other spectators and hide for in-game users
+    if (GameServer.getGameTablist() instanceof TeamTablist tablist) {
+      if (this.hasStatus(Status.User.OUT_GAME)
+          && !((GameServer.getGame() instanceof TmpGame) && ((TmpGame) GameServer.getGame()).hideTeams())) {
+        tablist.removeEntry(this);
+        tablist.addRemainEntry(this);
+      }
+    }
+
     for (User user : Server.getUsers()) {
       if (user.hasStatus(Status.User.IN_GAME, Status.User.PRE_GAME, Status.User.ONLINE)) {
         user.hideUser(this);
@@ -68,22 +75,11 @@ public class SpectatorUser extends TeamUser {
     this.setGlowingEnabled(true);
     this.setSpeedEnabled(false);
 
-    // remove from team chat
     if (this.getTeam() != null && this.getTeam().hasPrivateChat()) {
       Chat teamChat = Server.getChat(this.getTeam().getName());
       if (teamChat != null) {
         teamChat.removeWriter(this);
         teamChat.removeListener(this);
-      }
-    }
-
-    if (GameServer.getGameTablist() instanceof TeamTablist tablist) {
-      // set tablist team
-      if (!(GameServer.getGame() instanceof TmpGame)
-          || !((TmpGame) GameServer.getGame()).hideTeams()
-          || this.getStatus().equals(Status.User.SPECTATOR)) {
-        tablist.removeEntry(this);
-        tablist.addRemainEntry(this);
       }
     }
 
@@ -198,12 +194,11 @@ public class SpectatorUser extends TeamUser {
 
   public void hideSpectators() {
     Server.runTaskSynchrony(() -> {
-      for (User user : Server.getUsers()) {
-        user.showUser(this);
-
-        if (user.getStatus().equals(Status.User.OUT_GAME)
-            || user.getStatus().equals(Status.User.SPECTATOR)) {
-          this.hideUser(user);
+      if (!this.hasStatus(Status.User.OUT_GAME, Status.User.SPECTATOR)) {
+        for (User user : Server.getUsers()) {
+          if (user.hasStatus(Status.User.OUT_GAME, Status.User.SPECTATOR)) {
+            this.hideUser(user);
+          }
         }
       }
     }, BasicBukkit.getPlugin());
