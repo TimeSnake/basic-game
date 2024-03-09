@@ -4,8 +4,7 @@
 
 package de.timesnake.basic.game.util.game;
 
-import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
-import de.timesnake.basic.bukkit.util.user.scoreboard.*;
+import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroup;
 import de.timesnake.basic.game.util.user.TeamUser;
 import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.library.basic.util.Status;
@@ -18,9 +17,7 @@ import org.bukkit.Color;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
-
-  public static final int RANK_LENGTH = 6;
+public class Team implements TablistGroup {
 
   public static Color parseColor(String colorName) {
     return switch (colorName.toUpperCase()) {
@@ -44,10 +41,6 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
     };
   }
 
-  public static TablistGroupType getTablistTeamType() {
-    return TablistGroupType.GAME_TEAM;
-  }
-
   protected final Logger logger = LogManager.getLogger("team");
 
   private final DbTeam database;
@@ -57,7 +50,6 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
   private final ExTextColor textColor;
   private final ChatColor chatColor;
   private final Color color;
-  private final String tablistRank;
   private final float ratio;
   private final boolean privateChat;
   private final Integer minSize;
@@ -65,29 +57,23 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
   private Integer deaths = 0;
   private Integer kills = 0;
 
-  public Team(String name, Integer rank, String displayName, ExTextColor textColor, Color color,
-              float ratio, boolean privateChat, int minSize) throws UnsupportedGroupRankException {
+  public Team(String name, Integer rank, String displayName, ExTextColor textColor, Color color, float ratio,
+              boolean privateChat, int minSize) {
     this.database = null;
     this.name = name;
     this.rank = rank;
     this.displayName = displayName;
     this.textColor = textColor;
-    this.chatColor = de.timesnake.basic.bukkit.util.chat.ChatColor.translateFromExTextColor(
-        textColor);
+    this.chatColor = de.timesnake.basic.bukkit.util.chat.ChatColor.translateFromExTextColor(textColor);
     this.color = color;
     this.ratio = ratio;
     this.privateChat = privateChat;
     this.minSize = minSize;
 
-    if (String.valueOf(this.rank).length() > RANK_LENGTH) {
-      throw new UnsupportedGroupRankException(this.name, this.rank);
-    } else {
-      this.tablistRank = "0".repeat(Math.max(0, RANK_LENGTH - String.valueOf(this.rank).length())) + this.rank;
-      this.logger.info("Loaded team '{}': {}", this.name, this);
-    }
+    this.logger.info("Loaded team '{}': {}", this.name, this);
   }
 
-  public Team(DbTeam team) throws UnsupportedGroupRankException {
+  public Team(DbTeam team) {
     this.database = team;
 
     team = team.toLocal();
@@ -96,18 +82,12 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
     this.rank = team.getRank();
     this.displayName = team.getPrefix();
     this.textColor = team.getChatColor() != null ? team.getChatColor() : ExTextColor.WHITE;
-    this.chatColor = de.timesnake.basic.bukkit.util.chat.ChatColor.translateFromExTextColor(
-        this.textColor);
+    this.chatColor = de.timesnake.basic.bukkit.util.chat.ChatColor.translateFromExTextColor(this.textColor);
     this.color = parseColor(team.getColorName());
     this.ratio = team.getRatio();
     this.privateChat = team.hasPrivateChat();
     this.minSize = team.getMinSize();
 
-    if (String.valueOf(this.rank).length() > 6) {
-      throw new UnsupportedGroupRankException(this.name, this.rank);
-    }
-
-    this.tablistRank = "0".repeat(Math.max(0, 6 - String.valueOf(this.rank).length())) + this.rank;
     this.logger.info("Loaded team '{}': {}", this.name, this);
   }
 
@@ -120,8 +100,8 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
   }
 
   @Override
-  public String getTablistRank() {
-    return this.tablistRank;
+  public int getTablistRank() {
+    return this.rank;
   }
 
   @Override
@@ -130,8 +110,8 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
   }
 
   @Override
-  public ChatColor getTablistChatColor() {
-    return this.chatColor;
+  public ExTextColor getTablistChatColor() {
+    return this.textColor;
   }
 
   public String getDisplayName() {
@@ -152,10 +132,11 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
   }
 
   @Override
-  public ChatColor getTablistPrefixChatColor() {
-    return this.chatColor;
+  public ExTextColor getTablistPrefixChatColor() {
+    return this.textColor;
   }
 
+  @Deprecated
   public ChatColor getChatColor() {
     return chatColor;
   }
@@ -249,16 +230,6 @@ public class Team implements TagTablistableGroup, TagTablistableRemainTeam {
 
   public DbTeam getDatabase() {
     return database;
-  }
-
-  @Override
-  public NameTagVisibility isNameTagVisibleBy(TablistablePlayer player, TablistableGroup otherGroup) {
-    return NameTagVisibility.ALWAYS;
-  }
-
-  @Override
-  public NameTagVisibility isNameTagVisible(TablistablePlayer player) {
-    return NameTagVisibility.ALWAYS;
   }
 
   @Override

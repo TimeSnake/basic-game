@@ -4,9 +4,9 @@
 
 package de.timesnake.basic.game.util.server;
 
+import de.timesnake.basic.bukkit.core.user.scoreboard.tablist.Tablist2;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
-import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
 import de.timesnake.basic.game.util.game.Game;
 import de.timesnake.basic.game.util.user.SpectatorManager;
 import org.bukkit.Sound;
@@ -32,7 +32,7 @@ public class GameServer extends Server {
     return server.getGameSideboard();
   }
 
-  public static Tablist getGameTablist() {
+  public static Tablist2 getGameTablist() {
     return server.getGameTablist();
   }
 

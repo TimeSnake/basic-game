@@ -8,9 +8,9 @@ import de.timesnake.basic.bukkit.core.main.BasicBukkit;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Chat;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TeamTablist;
+import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroup;
+import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
-import de.timesnake.basic.game.util.game.TmpGame;
 import de.timesnake.basic.game.util.server.GameServer;
 import de.timesnake.library.basic.util.Status;
 import org.bukkit.entity.Player;
@@ -35,10 +35,18 @@ public class SpectatorUser extends TeamUser {
     GameServer.getSpectatorManager().updateSpectatorTools();
   }
 
+  @Override
+  public TablistGroup getTablistGroup(TablistGroupType type) {
+    return type.equals(de.timesnake.basic.game.util.game.TablistGroupType.GAME_TEAM)
+        && this.hasStatus(Status.User.SPECTATOR, Status.User.OUT_GAME) ? null : super.getTablistGroup(type);
+  }
+
   public void joinSpectator() {
     if (!this.hasStatus(Status.User.SPECTATOR)) {
       this.setStatus(Status.User.OUT_GAME);
     }
+
+    GameServer.getGameTablist().reloadEntry(this, true);
 
     this.setDefault();
     this.setCollitionWithEntites(false);
@@ -52,14 +60,6 @@ public class SpectatorUser extends TeamUser {
       this.setAllowFlight(true);
       this.setFlying(true);
     }, 10, BasicBukkit.getPlugin());
-
-    if (GameServer.getGameTablist() instanceof TeamTablist tablist) {
-      if (this.hasStatus(Status.User.OUT_GAME)
-          && !((GameServer.getGame() instanceof TmpGame) && ((TmpGame) GameServer.getGame()).hideTeams())) {
-        tablist.removeEntry(this);
-        tablist.addRemainEntry(this);
-      }
-    }
 
     for (User user : Server.getUsers()) {
       if (user.hasStatus(Status.User.IN_GAME, Status.User.PRE_GAME, Status.User.ONLINE)) {
@@ -151,8 +151,7 @@ public class SpectatorUser extends TeamUser {
     this.setFlying(flyEnabled);
   }
 
-  public void leaveSpectatorAndRejoin(@Nullable ExLocation location,
-                                      @NotNull Status.User newStatus) {
+  public void leaveSpectatorAndRejoin(@Nullable ExLocation location, @NotNull Status.User newStatus) {
     this.glowingEnabled = false;
     this.speedEnabled = false;
 
@@ -162,7 +161,7 @@ public class SpectatorUser extends TeamUser {
 
     this.setStatus(newStatus);
 
-    GameServer.getGameTablist().addEntry(this);
+    GameServer.getGameTablist().reloadEntry(this, true);
 
     Chat spectatorChat = GameServer.getSpectatorManager().getSpectatorChat();
     if (spectatorChat != null) {

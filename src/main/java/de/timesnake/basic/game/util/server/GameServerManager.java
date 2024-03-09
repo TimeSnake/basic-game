@@ -4,11 +4,11 @@
 
 package de.timesnake.basic.game.util.server;
 
+import de.timesnake.basic.bukkit.core.user.scoreboard.tablist.Tablist2;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.ServerManager;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.scoreboard.Sideboard;
-import de.timesnake.basic.bukkit.util.user.scoreboard.Tablist;
 import de.timesnake.basic.game.util.game.NonTmpGame;
 import de.timesnake.basic.game.util.game.TmpGame;
 import de.timesnake.basic.game.util.user.SpectatorManager;
@@ -80,6 +80,6 @@ public abstract class GameServerManager<Game extends de.timesnake.basic.game.uti
 
   public abstract Sideboard getGameSideboard();
 
-  public abstract Tablist getGameTablist();
+  public abstract Tablist2 getGameTablist();
 
 }
