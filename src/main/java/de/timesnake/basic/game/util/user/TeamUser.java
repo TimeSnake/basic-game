@@ -5,8 +5,8 @@
 package de.timesnake.basic.game.util.user;
 
 import de.timesnake.basic.bukkit.util.user.User;
+import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroup;
 import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType;
-import de.timesnake.basic.bukkit.util.user.scoreboard.TablistableGroup;
 import de.timesnake.basic.game.util.game.Team;
 import de.timesnake.basic.game.util.game.TmpGame;
 import de.timesnake.basic.game.util.server.GameServer;
@@ -39,8 +39,7 @@ public class TeamUser extends User {
   protected @NotNull Component getPlayerChatName() {
     Team team = this.getTeam();
 
-    if (team != null && (!(GameServer.getGame() instanceof TmpGame)
-        || !((TmpGame) GameServer.getGame()).hideTeams())) {
+    if (team != null && (!(GameServer.getGame() instanceof TmpGame) || !((TmpGame) GameServer.getGame()).hideTeams())) {
       return Component.text(this.getPlayer().getName(), team.getTextColor());
     }
     return super.getPlayerChatName();
@@ -82,9 +81,8 @@ public class TeamUser extends User {
   }
 
   @Override
-  public TablistableGroup getTablistGroup(TablistGroupType type) {
-    return Team.getTablistTeamType().equals(type) ? this.getTeam()
-        : super.getTablistGroup(type);
+  public TablistGroup getTablistGroup(TablistGroupType type) {
+    return de.timesnake.basic.game.util.game.TablistGroupType.GAME_TEAM.equals(type) ? this.getTeam() : super.getTablistGroup(type);
   }
 
   public void updateTeam() {

@@ -4,7 +4,6 @@
 
 package de.timesnake.basic.game.util.game;
 
-import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
 import de.timesnake.database.util.game.DbGame;
 import de.timesnake.database.util.game.DbKit;
 import de.timesnake.database.util.game.DbMap;
@@ -92,7 +91,7 @@ public class Game<Info extends GameInfo> {
     return new Map(dbMap, loadWorld);
   }
 
-  public Team loadTeam(DbTeam team) throws UnsupportedGroupRankException {
+  public Team loadTeam(DbTeam team) {
     return new Team(team);
   }
 

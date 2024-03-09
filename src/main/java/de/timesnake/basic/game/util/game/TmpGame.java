@@ -4,7 +4,6 @@
 
 package de.timesnake.basic.game.util.game;
 
-import de.timesnake.basic.bukkit.util.exception.UnsupportedGroupRankException;
 import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.database.util.game.DbTmpGame;
 import de.timesnake.library.basic.util.Availability;
@@ -24,14 +23,7 @@ public class TmpGame extends Game<TmpGameInfo> {
     super(database, new TmpGameInfo(database.getInfo()), loadWorlds);
 
     for (DbTeam dbTeam : database.getTeams()) {
-      Team team;
-      try {
-        team = this.loadTeam(dbTeam);
-      } catch (UnsupportedGroupRankException e) {
-        this.logger.warn("Unsupported rank for team '{}': {}", dbTeam.getName(), e.getMessage());
-        continue;
-      }
-
+      Team team = this.loadTeam(dbTeam);
       if (team != null) {
         this.teamsByName.put(team.getName(), team);
         this.teamsSortedByRank.add(team);
