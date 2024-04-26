@@ -241,7 +241,7 @@ public class Map {
     return this.locationsById.keySet();
   }
 
-  public Collection<Integer> getLocationsIds(int begin, int end) {
+  public Collection<Integer> getLocationIds(int begin, int end) {
     return this.getLocationIds().stream().filter(i -> i >= begin && i < end).toList();
   }
 
