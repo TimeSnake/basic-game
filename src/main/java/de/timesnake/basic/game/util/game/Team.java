@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -105,22 +106,17 @@ public class Team implements TablistGroup {
   }
 
   @Override
-  public String getTablistName() {
+  public @NotNull String getTablistName() {
     return this.getDisplayName();
   }
 
   @Override
-  public ExTextColor getTablistChatColor() {
+  public ExTextColor getTablistColor() {
     return this.textColor;
   }
 
   public String getDisplayName() {
     return this.displayName;
-  }
-
-  @Override
-  public String getTablistPrefix() {
-    return "";
   }
 
   public ExTextColor getTextColor() {
@@ -132,7 +128,7 @@ public class Team implements TablistGroup {
   }
 
   @Override
-  public ExTextColor getTablistPrefixChatColor() {
+  public ExTextColor getTablistPrefixColor() {
     return this.textColor;
   }
 
