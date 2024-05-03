@@ -6,9 +6,9 @@ package de.timesnake.basic.game.util.game;
 
 public class TablistGroupType extends de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroupType {
 
-  public static final TablistGroupType GAME_TEAM = new TablistGroupType();
+  public static final TablistGroupType GAME_TEAM = new TablistGroupType("game_team");
 
-  public TablistGroupType() {
-    super();
+  public TablistGroupType(String name) {
+    super(name);
   }
 }
