@@ -132,7 +132,7 @@ public class Team implements TablistGroup {
     return this.textColor;
   }
 
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public ChatColor getChatColor() {
     return chatColor;
   }
