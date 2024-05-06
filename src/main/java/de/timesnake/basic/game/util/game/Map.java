@@ -230,6 +230,14 @@ public class Map {
         .collect(Collectors.toList());
   }
 
+  public List<ExLocation> getLocationsSorted(int begin, int end) {
+    return this.locationsById.entrySet().stream()
+        .filter(e -> e.getKey() >= begin && e.getKey() < end)
+        .sorted(java.util.Map.Entry.comparingByKey())
+        .map(java.util.Map.Entry::getValue)
+        .collect(Collectors.toList());
+  }
+
   public List<ExLocation> getLocations(Collection<Integer> ids) {
     return this.locationsById.entrySet().stream()
         .filter(e -> ids.contains(e.getKey()))
