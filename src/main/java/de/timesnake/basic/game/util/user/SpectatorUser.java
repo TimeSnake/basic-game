@@ -184,6 +184,7 @@ public class SpectatorUser extends TeamUser {
     }
 
     this.hideSpectators();
+    Server.getUsers().forEach(u -> u.showUser(this));
     GameServer.getSpectatorManager().updateGlowingPlayers();
 
     this.setRejoinInventory();

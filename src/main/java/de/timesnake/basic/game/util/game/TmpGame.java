@@ -16,8 +16,7 @@ import java.util.*;
 public class TmpGame extends Game<TmpGameInfo> {
 
   protected final java.util.Map<String, Team> teamsByName = new HashMap<>();
-  protected final TreeSet<Team> teamsSortedByRank = new TreeSet<>(
-      Comparator.comparingInt(Team::getRank));
+  protected final TreeSet<Team> teamsSortedByRank = new TreeSet<>(Comparator.comparingInt(Team::getRank));
 
   public TmpGame(DbTmpGame database, boolean loadWorlds) {
     super(database, new TmpGameInfo(database.getInfo()), loadWorlds);
@@ -52,7 +51,7 @@ public class TmpGame extends Game<TmpGameInfo> {
   }
 
   public List<Team> getTeamsSortedByRank(int amount) {
-    return teamsSortedByRank.stream().limit(amount).toList();
+    return new ArrayList<>(teamsSortedByRank).stream().limit(amount).toList();
   }
 
 
