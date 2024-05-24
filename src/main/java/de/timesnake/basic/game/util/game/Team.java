@@ -220,6 +220,10 @@ public class Team implements TablistGroup {
     return this.users.isEmpty();
   }
 
+  public void clearUsers() {
+    this.users.clear();
+  }
+
   public TablistGroupType getTeamType() {
     return TablistGroupType.GAME_TEAM;
   }
