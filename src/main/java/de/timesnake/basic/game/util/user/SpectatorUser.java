@@ -37,8 +37,11 @@ public class SpectatorUser extends TeamUser {
 
   @Override
   public TablistGroup getTablistGroup(TablistGroupType type) {
-    return type.equals(de.timesnake.basic.game.util.game.TablistGroupType.GAME_TEAM)
-        && this.hasStatus(Status.User.SPECTATOR, Status.User.OUT_GAME) ? null : super.getTablistGroup(type);
+    if (type.equals(de.timesnake.basic.game.util.game.TablistGroupType.GAME_TEAM)
+        && this.hasStatus(Status.User.SPECTATOR, Status.User.OUT_GAME)) {
+      return null;
+    }
+    return super.getTablistGroup(type);
   }
 
   public void joinSpectator() {
