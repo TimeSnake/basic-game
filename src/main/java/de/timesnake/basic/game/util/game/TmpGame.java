@@ -131,6 +131,10 @@ public class TmpGame extends Game<TmpGameInfo> {
     return getInfo().getTexturePackLink();
   }
 
+  public String getTexturePackHash() {
+    return getInfo().getTexturePackHash();
+  }
+
   public Boolean hasTexturePack() {
     return getInfo().hasTexturePack();
   }
