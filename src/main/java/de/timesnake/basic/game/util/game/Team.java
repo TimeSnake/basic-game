@@ -123,7 +123,7 @@ public class Team implements TablistGroup {
     return this.textColor;
   }
 
-  public String getTDColor() {
+  public @NotNull String getTDColor() {
     return "§" + this.textColor.getToken();
   }
 
