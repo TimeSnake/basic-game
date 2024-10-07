@@ -84,7 +84,7 @@ public class Kit {
         .setDisplayName(this.getName())
         .setExLore(new ArrayList<>(this.getDescription()))
         .hideAll()
-        .onClick(listener);
+        .onClick(listener, true);
   }
 
   public static class Builder<B extends Builder<B>> implements BuilderBasis {
