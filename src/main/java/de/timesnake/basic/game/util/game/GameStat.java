@@ -8,6 +8,7 @@ import de.timesnake.database.util.game.GameUserStatistic;
 import de.timesnake.library.basic.util.statistics.Stat;
 import de.timesnake.library.basic.util.statistics.StatPeriod;
 import de.timesnake.library.basic.util.statistics.StatType;
+
 import java.util.Map;
 
 public class GameStat<Value> extends Stat<Value> {
@@ -57,29 +58,29 @@ public class GameStat<Value> extends Stat<Value> {
   }
 
   @Override
-  public Value increase(StatPeriod period, Value value) {
-    Value res = super.increase(period, value);
+  public Value increaseBy(StatPeriod period, Value value) {
+    Value res = super.increaseBy(period, value);
     this.database.setValue(period, this.type, res);
     return res;
   }
 
   @Override
-  public Value higher(StatPeriod period, Value value) {
-    Value res = super.higher(period, value);
+  public Value updateToMax(StatPeriod period, Value value) {
+    Value res = super.updateToMax(period, value);
     this.database.setValue(period, this.type, res);
     return res;
   }
 
   @Override
-  public Map<StatPeriod, Value> increaseAll(Value value) {
-    Map<StatPeriod, Value> res = super.increaseAll(value);
+  public Map<StatPeriod, Value> increaseAllBy(Value value) {
+    Map<StatPeriod, Value> res = super.increaseAllBy(value);
     this.database.setValues(res, this.type);
     return res;
   }
 
   @Override
-  public Map<StatPeriod, Value> higherAll(Value value) {
-    Map<StatPeriod, Value> res = super.higherAll(value);
+  public Map<StatPeriod, Value> updateAllToMax(Value value) {
+    Map<StatPeriod, Value> res = super.updateAllToMax(value);
     this.database.setValues(res, this.type);
     return res;
   }
