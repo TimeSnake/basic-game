@@ -57,6 +57,9 @@ public class Map {
 
       ExItemStack item;
       try {
+        if (Material.getMaterial(materialName) == null) {
+          throw new IllegalArgumentException();
+        }
         item = new ExItemStack(Material.getMaterial(materialName));
       } catch (IllegalArgumentException var6) {
         this.logger.warn("Can not load item for map {}", this.getName());
