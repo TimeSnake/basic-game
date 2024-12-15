@@ -11,10 +11,14 @@ import de.timesnake.basic.game.util.game.Team;
 import de.timesnake.basic.game.util.game.TmpGame;
 import de.timesnake.basic.game.util.server.GameServer;
 import net.kyori.adventure.text.Component;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class TeamUser extends User {
+
+  private final Logger logger = LogManager.getLogger("user.team");
 
   private Team team;
 
@@ -61,7 +65,9 @@ public class TeamUser extends User {
 
       this.team = team;
       if (this.team != null) {
-        this.team.addUser(this);
+        if (!this.team.addUser(this)) {
+          this.logger.warn("Failed to add user '{}' to team '{}'", this.getName(), this.team.getName());
+        }
       }
 
       if (updateDatabase) {
@@ -85,7 +91,4 @@ public class TeamUser extends User {
     return de.timesnake.basic.game.util.game.TablistGroupType.GAME_TEAM.equals(type) ? this.getTeam() : super.getTablistGroup(type);
   }
 
-  public void updateTeam() {
-    this.setTeam(((TmpGame) GameServer.getGame()).getTeam(this.getDatabase().getTeamName()));
-  }
 }
