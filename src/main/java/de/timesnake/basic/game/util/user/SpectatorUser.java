@@ -51,7 +51,9 @@ public class SpectatorUser extends TeamUser {
 
     GameServer.getGameTablist().reloadEntry(this, true);
 
-    this.setDefault();
+    this.resetPlayerProperties();
+    this.clearInventory();
+    this.unlockAll();
     this.setCollitionWithEntites(false);
     this.setAllowFlight(true);
     this.setFlying(true);
@@ -178,7 +180,9 @@ public class SpectatorUser extends TeamUser {
 
   public void rejoinGame(@Nullable ExLocation location, @NotNull Status.User newStatus) {
     this.setStatus(newStatus);
-    this.setDefault();
+    this.resetPlayerProperties();
+    this.unlockAll();
+    this.clearInventory();
 
     this.setGameMode(GameServer.getSpectatorManager().getReJoinGameMode());
 
