@@ -8,6 +8,7 @@ import de.timesnake.basic.bukkit.util.user.scoreboard.TablistGroup;
 import de.timesnake.basic.game.util.user.TeamUser;
 import de.timesnake.database.util.game.DbTeam;
 import de.timesnake.library.basic.util.Status;
+import de.timesnake.library.basic.util.UserSet;
 import de.timesnake.library.chat.ExTextColor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,8 +16,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Team implements TablistGroup {
 
@@ -54,7 +56,7 @@ public class Team implements TablistGroup {
   private final float ratio;
   private final boolean privateChat;
   private final Integer minSize;
-  private Set<TeamUser> users = new HashSet<>();
+  private final Set<TeamUser> users = new UserSet<>();
   private Integer deaths = 0;
   private Integer kills = 0;
 
@@ -185,28 +187,13 @@ public class Team implements TablistGroup {
     return this.users;
   }
 
-  public void setUsers(Set<TeamUser> users) {
-    this.users = users;
-  }
-
   public Set<TeamUser> getInGameUsers() {
-    Set<TeamUser> users = new HashSet<>();
-    for (TeamUser user : this.users) {
-      if (user.getStatus().equals(Status.User.IN_GAME)) {
-        users.add(user);
-      }
-    }
-    return users;
+    return this.users.stream().filter(user -> user.hasStatus(Status.User.IN_GAME)).collect(Collectors.toSet());
   }
 
   public boolean addUser(TeamUser user) {
     if (user.getTeam().equals(this)) {
-      if (this.users.contains(user)) {
-        return false;
-      } else {
-        this.users.add(user);
-        return true;
-      }
+      return this.users.add(user);
     } else {
       return false;
     }
@@ -224,12 +211,21 @@ public class Team implements TablistGroup {
     this.users.clear();
   }
 
-  public TablistGroupType getTeamType() {
-    return TablistGroupType.GAME_TEAM;
-  }
-
   public DbTeam getDatabase() {
     return database;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Team team = (Team) o;
+    return Objects.equals(name, team.name);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(name);
   }
 
   @Override
