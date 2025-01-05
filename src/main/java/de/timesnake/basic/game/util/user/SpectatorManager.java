@@ -222,6 +222,10 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
 
     SpectatorUser user = (SpectatorUser) Server.getUser(receiver);
 
+    if (user == null) {
+      return dataPacket;
+    }
+
     if (!user.hasGlowingEnabled()) {
       return dataPacket;
     }
