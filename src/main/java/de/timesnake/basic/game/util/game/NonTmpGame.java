@@ -23,10 +23,6 @@ public class NonTmpGame extends Game<NonTmpGameInfo> {
     return getInfo().isOwnable();
   }
 
-  public boolean isNetherAndEndAllowed() {
-    return getInfo().isNetherAndEndAllowed();
-  }
-
   public String getName() {
     return getInfo().getName();
   }
