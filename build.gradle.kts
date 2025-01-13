@@ -30,8 +30,8 @@ repositories {
 dependencies {
     compileOnly("de.timesnake:basic-bukkit:4.+")
 
-    compileOnly("de.timesnake:database-bukkit:3.+")
-    compileOnly("de.timesnake:database-api:3.+")
+    compileOnly("de.timesnake:database-bukkit:4.+")
+    compileOnly("de.timesnake:database-api:4.+")
 
     compileOnly("de.timesnake:channel-bukkit:5.+")
     compileOnly("de.timesnake:channel-api:5.+")

@@ -82,7 +82,7 @@ public class Team implements TablistGroup {
     team = team.toLocal();
 
     this.name = team.getName();
-    this.rank = team.getRank();
+    this.rank = team.getPriority();
     this.displayName = team.getPrefix();
     this.textColor = team.getChatColor() != null ? team.getChatColor() : ExTextColor.WHITE;
     this.chatColor = de.timesnake.basic.bukkit.util.chat.ChatColor.translateFromExTextColor(this.textColor);
