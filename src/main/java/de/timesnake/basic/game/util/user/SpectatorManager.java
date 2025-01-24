@@ -113,8 +113,11 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
         user.updateInventory();
       }, true, true);
 
-  public static final ExItemStack LEAVE_ITEM = new ExItemStack(8, Material.ANVIL,
-      "§6Leave (hold right)").setMoveable(false).setDropable(false).immutable()
+  public static final ExItemStack LEAVE_ITEM = new ExItemStack(8, Material.RED_DYE)
+      .setDisplayName("§6Leave (hold right)")
+      .setMoveable(false)
+      .setDropable(false)
+      .immutable()
       .onInteract(event -> {
         SpectatorUser user = ((SpectatorUser) event.getUser());
         if (event.getAction().isRightClick()) {
@@ -315,7 +318,7 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
 
   public abstract @NotNull ExLocation getSpectatorSpawn();
 
-  public abstract boolean loadTools();
+  public abstract boolean loadSpectatorTools();
 
   public GameMode getReJoinGameMode() {
     return GameMode.ADVENTURE;

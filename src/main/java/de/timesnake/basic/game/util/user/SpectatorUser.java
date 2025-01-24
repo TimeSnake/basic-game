@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class SpectatorUser extends TeamUser {
 
-  protected boolean glowingEnabled = false;
+  protected boolean glowingEnabled = true;
   protected boolean speedEnabled = false;
   protected boolean flyEnabled = true;
 
@@ -55,16 +55,9 @@ public class SpectatorUser extends TeamUser {
     this.clearInventory();
     this.unlockAll();
     this.setCollitionWithEntites(false);
-    this.setAllowFlight(true);
-    this.setFlying(true);
     this.setInvulnerable(true);
     this.lockInventory();
     this.lockInventoryItemMove();
-
-    Server.runTaskLaterSynchrony(() -> {
-      this.setAllowFlight(true);
-      this.setFlying(true);
-    }, 10, BasicBukkit.getPlugin());
 
     for (User user : Server.getUsers()) {
       if (user.hasStatus(Status.User.IN_GAME, Status.User.PRE_GAME, Status.User.ONLINE)) {
@@ -77,8 +70,10 @@ public class SpectatorUser extends TeamUser {
 
     GameServer.getSpectatorManager().sendGlowUpdateToUser(this);
 
-    this.setGlowingEnabled(true);
-    this.setSpeedEnabled(false);
+    this.setGlowingEnabled(this.glowingEnabled);
+    this.setAllowFlight(this.flyEnabled);
+    this.setFlying(this.flyEnabled);
+    this.setSpeedEnabled(this.speedEnabled);
 
     if (this.getTeam() != null && this.getTeam().hasPrivateChat()) {
       Chat teamChat = Server.getChat(this.getTeam().getName());
@@ -93,7 +88,7 @@ public class SpectatorUser extends TeamUser {
     this.resetSideboard();
     this.setSideboard(GameServer.getSpectatorManager().getSpectatorSideboard());
 
-    if (!GameServer.getSpectatorManager().loadTools()) {
+    if (!GameServer.getSpectatorManager().loadSpectatorTools()) {
       return;
     }
 
