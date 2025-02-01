@@ -178,6 +178,7 @@ public class SpectatorUser extends TeamUser {
     this.resetPlayerProperties();
     this.unlockAll();
     this.clearInventory();
+    this.setCollitionWithEntites(true);
 
     this.setGameMode(GameServer.getSpectatorManager().getReJoinGameMode());
 
