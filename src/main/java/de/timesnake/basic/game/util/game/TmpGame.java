@@ -63,8 +63,8 @@ public class TmpGame extends Game<TmpGameInfo> {
     return getInfo().getMinPlayerNumber();
   }
 
-  public List<Integer> getTeamSizes() {
-    return getInfo().getTeamSizes();
+  public List<Integer> getTeamAmounts() {
+    return getInfo().getTeamAmounts();
   }
 
   public Availability getTeamMerge() {
