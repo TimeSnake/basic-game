@@ -47,9 +47,8 @@ public class SpectatorUser extends TeamUser {
   public void joinSpectator() {
     if (!this.hasStatus(Status.User.SPECTATOR)) {
       this.setStatus(Status.User.OUT_GAME);
+      GameServer.getGameTablist().reloadEntry(this, true);
     }
-
-    GameServer.getGameTablist().reloadEntry(this, true);
 
     this.resetPlayerProperties();
     this.clearInventory();
@@ -68,8 +67,7 @@ public class SpectatorUser extends TeamUser {
       this.showUser(user);
     }
 
-    GameServer.getSpectatorManager().sendGlowUpdateToUser(this);
-
+    this.setGlowingEnabled(false);
     this.setGlowingEnabled(this.glowingEnabled);
     this.setAllowFlight(this.flyEnabled);
     this.setFlying(this.flyEnabled);
@@ -109,9 +107,9 @@ public class SpectatorUser extends TeamUser {
   public void setSpectatorInventory() {
     this.setItem(SpectatorManager.LEAVE_ITEM.cloneWithId());
     this.setItem(SpectatorManager.USER_INV.cloneWithId());
-    this.setItem(SpectatorManager.SPEED.cloneWithId());
-    this.setItem(SpectatorManager.GLOWING.cloneWithId().enchant());
-    this.setItem(SpectatorManager.FLYING.cloneWithId().enchant());
+    this.setItem(SpectatorManager.SPEED.cloneWithId().enchant(this.speedEnabled));
+    this.setItem(SpectatorManager.GLOWING.cloneWithId().enchant(this.glowingEnabled));
+    this.setItem(SpectatorManager.FLYING.cloneWithId().enchant(this.flyEnabled));
   }
 
   public void openGameUserInventory() {
@@ -161,8 +159,6 @@ public class SpectatorUser extends TeamUser {
 
     this.setStatus(newStatus);
 
-    GameServer.getGameTablist().reloadEntry(this, true);
-
     Chat spectatorChat = GameServer.getSpectatorManager().getSpectatorChat();
     if (spectatorChat != null) {
       spectatorChat.removeWriter(this);
@@ -189,6 +185,8 @@ public class SpectatorUser extends TeamUser {
     this.hideSpectators();
     Server.getUsers().forEach(u -> u.showUser(this));
     GameServer.getSpectatorManager().updateGlowingPlayers();
+
+    GameServer.getGameTablist().reloadEntry(this, true);
 
     this.setRejoinInventory();
 

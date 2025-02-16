@@ -65,15 +65,8 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
       .onInteract(event -> {
         SpectatorUser user = ((SpectatorUser) event.getUser());
         user.setGlowingEnabled(!user.hasGlowingEnabled());
-        if (user.hasGlowingEnabled()) {
-          user.sendPluginMessage(Plugin.GAME,
-              Component.text("Enabled glowing", ExTextColor.PERSONAL));
-          event.getClickedItem().enchant();
-        } else {
-          user.sendPluginMessage(Plugin.GAME,
-              Component.text("Disabled glowing", ExTextColor.PERSONAL));
-          event.getClickedItem().disenchant();
-        }
+        user.sendPluginTDMessage(Plugin.GAME, "§s" + (user.hasGlowingEnabled() ? "Enabled" : "Disabled") + " glowing");
+        event.getClickedItem().enchant(user.hasGlowingEnabled());
         user.updateInventory();
       }, true, true);
 
@@ -86,13 +79,8 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
       .onInteract(event -> {
         SpectatorUser user = ((SpectatorUser) event.getUser());
         user.setSpeedEnabled(!user.hasSpeedEnabled());
-        if (user.hasSpeedEnabled()) {
-          user.sendPluginTDMessage(Plugin.GAME, "§sEnabled speed");
-          event.getClickedItem().enchant();
-        } else {
-          user.sendPluginTDMessage(Plugin.GAME, "§sDisabled speed");
-          event.getClickedItem().disenchant();
-        }
+        user.sendPluginTDMessage(Plugin.GAME, "§s" + (user.hasSpeedEnabled() ? "Enabled" : "Disabled") + " speed");
+        event.getClickedItem().enchant(user.hasSpeedEnabled());
         user.updateInventory();
       }, true, true);
 
@@ -106,11 +94,7 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
         SpectatorUser user = ((SpectatorUser) event.getUser());
         user.setFlyEnabled(!user.hasFlyEnabled());
         user.sendPluginTDMessage(Plugin.GAME, "§s" + (user.getAllowFlight() ? "Enabled" : "Disabled") + " flying");
-        if (user.getAllowFlight()) {
-          event.getClickedItem().enchant();
-        } else {
-          event.getClickedItem().disenchant();
-        }
+        event.getClickedItem().enchant(user.hasFlyEnabled());
         user.updateInventory();
       }, true, true);
 
@@ -177,22 +161,19 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
   }
 
   public void sendGlowUpdateToUser(User user) {
-    this.sendUpdatePackets(user);
+    this.sendGlowUpdatePacketsToUser(user);
   }
 
   public void updateGlowingPlayers() {
     this.glowingUsers = new HashSet<>(Server.getInGameUsers());
-    Server.getUsers(u -> u.hasStatus(Status.User.OUT_GAME, Status.User.SPECTATOR)).forEach(this::sendUpdatePackets);
+    Server.getUsers(u -> u.hasStatus(Status.User.OUT_GAME, Status.User.SPECTATOR)).forEach(this::sendGlowUpdatePacketsToUser);
   }
 
-  private void sendUpdatePackets(User user) {
+  private void sendGlowUpdatePacketsToUser(User user) {
     for (User glowingUser : this.glowingUsers) {
-      Packet<?> packet = new ClientboundSetEntityDataPacketBuilder(glowingUser.getMinecraftPlayer())
+      user.sendPacket(new ClientboundSetEntityDataPacketBuilder(glowingUser.getMinecraftPlayer())
           .setAllFromEntity()
-          .setFlag(ClientboundSetEntityDataPacketBuilder.SharedFlags.GLOWING,
-              ((SpectatorUser) user).hasGlowingEnabled())
-          .build();
-      user.sendPacket(packet);
+          .build());
     }
   }
 
@@ -252,9 +233,7 @@ public abstract class SpectatorManager implements UserInventoryClickListener, Pa
 
     User clickedUser = this.userHeadsById.get(clickedItem.getId());
     user.teleport(clickedUser);
-    user.asSender(Plugin.GAME)
-        .sendPluginMessage(Component.text("Teleported to player ", ExTextColor.PERSONAL)
-            .append(clickedUser.getChatNameComponent()));
+    user.asSender(Plugin.GAME).sendPluginTDMessage("§sTeleported to player " + clickedUser.getTDChatName());
 
     e.setCancelled(true);
   }
