@@ -8,6 +8,7 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.exception.LocationNotInWorldException;
 import de.timesnake.basic.bukkit.util.exception.WorldNotExistException;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
+import de.timesnake.basic.bukkit.util.world.BlockPolygon;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.database.util.game.DbMap;
@@ -35,7 +36,7 @@ public class Map {
   protected final java.util.Map<String, String> properties;
   protected final DbMap dbMap;
   protected final String worldName;
-  protected final java.util.Map<Integer, ExLocation> locationsById = new HashMap<>();
+  protected final TreeMap<Integer, ExLocation> locationsById = new TreeMap<>();
   protected final List<String> authors;
   protected ExWorld world;
   private Integer votes = 0;
@@ -226,26 +227,51 @@ public class Map {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Gets all locations within given bounds.
+   *
+   * @param begin begin index
+   * @param end   end index (exclusive)
+   * @return Returns a list of locations
+   */
   public List<ExLocation> getLocations(int begin, int end) {
-    return this.locationsById.entrySet().stream()
-        .filter(e -> e.getKey() >= begin && e.getKey() < end)
-        .map(java.util.Map.Entry::getValue)
-        .collect(Collectors.toList());
+    List<ExLocation> list = new ArrayList<>();
+    for (java.util.Map.Entry<Integer, ExLocation> e : this.locationsById.entrySet()) {
+      if (e.getKey() >= end) {
+        break;
+      }
+      if (e.getKey() >= begin) {
+        ExLocation value = e.getValue();
+        list.add(value);
+      }
+    }
+    return list;
   }
 
+  @Deprecated
   public List<ExLocation> getLocationsSorted(int begin, int end) {
-    return this.locationsById.entrySet().stream()
-        .filter(e -> e.getKey() >= begin && e.getKey() < end)
-        .sorted(java.util.Map.Entry.comparingByKey())
-        .map(java.util.Map.Entry::getValue)
-        .collect(Collectors.toList());
+    return this.getLocations(begin, end);
   }
 
+  @Deprecated
   public List<ExLocation> getLocations(Collection<Integer> ids) {
     return this.locationsById.entrySet().stream()
         .filter(e -> ids.contains(e.getKey()))
         .map(java.util.Map.Entry::getValue)
         .collect(Collectors.toList());
+  }
+
+  /**
+   * Gets a {@link BlockPolygon} build from all locations with indizes within given bounds.
+   * <p>
+   * <b>Important:</b> it is highly recommended to cache this result.
+   *
+   * @param begin start index
+   * @param end   end index (exclusive)
+   * @return Returns the {@link  BlockPolygon}
+   */
+  public BlockPolygon getBlockPolygon(int begin, int end) {
+    return new BlockPolygon(this.world, this.getLocations(begin, end));
   }
 
   public Collection<Integer> getLocationIds() {
